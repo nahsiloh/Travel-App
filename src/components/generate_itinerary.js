@@ -7,7 +7,7 @@ import "react-dates/lib/css/_datepicker.css";
 import "./generate_itinerary.css";
 
 import { formatDate } from "./format_dates";
-import AddLocation from "./add_location";
+import AddLocationForEachDay from "./add_location";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
@@ -19,8 +19,8 @@ class GenerateItinerary extends React.Component {
     this.state = {
       startDate: moment(),
       endDate: moment().add(7, "days"),
-      date_difference: "",
-      travel_dates: []
+      dateDifference: "",
+      travelDates: []
     };
   }
 
@@ -36,7 +36,7 @@ class GenerateItinerary extends React.Component {
       return (
         <div key={day}>
           <p>{formatDate(day)}</p>
-          <AddLocation />
+          <AddLocationForEachDay />
         </div>
       );
     });
@@ -44,12 +44,12 @@ class GenerateItinerary extends React.Component {
 
   generateItinerary = () => {
     const displayDays = this.countDays();
-    const travel_dates = this.printDatesList();
+    const travelDates = this.printDatesList();
 
     this.setState(() => {
       return {
-        date_difference: displayDays,
-        travel_dates
+        dateDifference: displayDays,
+        travelDates
       };
     });
   };
@@ -71,7 +71,7 @@ class GenerateItinerary extends React.Component {
         <button className={"submit_button"} onClick={this.generateItinerary}>
           Lets fly!
         </button>
-        <div>{this.state.travel_dates}</div>
+        <div>{this.state.travelDates}</div>
       </div>
     );
   }

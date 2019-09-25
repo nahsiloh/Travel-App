@@ -1,34 +1,60 @@
 import React from "react";
+import AddInputLocationBox from "./add_input_component";
+import uuidv1 from "uuid/v1";
 
-class AddLocation extends React.Component {
+class AddLocationForEachDay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      clicks: "",
-      input_box: []
+      inputComponent: []
     };
   }
 
-  // createInputBox = () => {
-  //   [...Array(1)].map(() => <input></input>);
-  // };
+  // {value: ""}
+  addOneLocation = () => {
+    this.setState({
+      inputComponent: [
+        ...this.state.inputComponent,
+        { id: uuidv1(), value: "" }
+      ]
+    });
+  };
 
-  handleClick = () => {
-    // const clicks =
-    const createInputBox = [...Array(1)].map((e, i) => <input></input>);
-    console.log(createInputBox);
-    // this.setState(() => {
-    //   return { input_box:  };
-    // });
+  updateLocation = (travelDetail, value) => {
+    travelDetail.value = value;
+    this.setState({
+      inputComponent: [...this.state.inputComponent]
+    });
+  };
+
+  deleteLocation = travelDetail => {
+    this.setState({
+      inputComponent: [
+        ...this.state.inputComponent.filter(item => item !== travelDetail)
+      ]
+    });
   };
 
   render() {
+    console.log(this.state.inputComponent);
     return (
       <div>
-        <button onClick={this.handleClick}>+</button>
+        <button onClick={this.addOneLocation}>
+          <i className="fas fa-plus"></i>
+        </button>
+        {this.state.inputComponent.map(travelDetail => {
+          return (
+            <AddInputLocationBox
+              key={travelDetail.id}
+              travelDetail={travelDetail}
+              updateLocation={val => this.updateLocation(travelDetail, val)}
+              deleteItem={() => this.deleteLocation(travelDetail)}
+            />
+          );
+        })}
       </div>
     );
   }
 }
 
-export default AddLocation;
+export default AddLocationForEachDay;
