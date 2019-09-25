@@ -1,0 +1,11 @@
+.setDate_container {
+  text-align: center;
+}
+
+.submit_button {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 10px;
+  text-decoration: none;
+}
