@@ -4,25 +4,28 @@ class AddLocation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      clicks: "",
       input_box: []
     };
   }
 
-  createInputBox = () => {
-    [...Array(1)].map(() => <input></input>);
-  };
+  // createInputBox = () => {
+  //   [...Array(1)].map(() => <input></input>);
+  // };
 
-  onClick = () => {
-    this.setState(() => {
-      return { input_box: this.createInputBox };
-    });
+  handleClick = () => {
+    // const clicks =
+    const createInputBox = [...Array(1)].map((e, i) => <input></input>);
+    console.log(createInputBox);
+    // this.setState(() => {
+    //   return { input_box:  };
+    // });
   };
 
   render() {
     return (
       <div>
-        <button onClick={this.onClick}>+</button>
-        <this.createInputBox />
+        <button onClick={this.handleClick}>+</button>
       </div>
     );
   }
