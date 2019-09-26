@@ -1,14 +1,11 @@
 import React from "react";
 import "./App.css";
-import Map from "./components/map";
-import Home from "./components/home";
+import GenerateItinerary from "./components/generate_itinerary";
 
 function App() {
   return (
     <div className="App">
-      <h1>Lets Go!</h1>
-      <Home />
-      {/* <Map /> */}
+      <GenerateItinerary />
     </div>
   );
 }

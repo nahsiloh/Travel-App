@@ -6,48 +6,57 @@ class AddLocationForEachDay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputComponent: []
+      listOfLocationsPerDay: []
     };
   }
 
   // {value: ""}
   addOneLocation = () => {
     this.setState({
-      inputComponent: [
-        ...this.state.inputComponent,
-        { id: uuidv1(), value: "" }
+      listOfLocationsPerDay: [
+        ...this.state.listOfLocationsPerDay,
+        { id: uuidv1(), value: "", catagory: "", cost: "" }
       ]
     });
   };
 
-  updateLocation = (travelDetail, value) => {
-    travelDetail.value = value;
+  updateLocation = (travelDetail, inputValue, inputCategory, inputCost) => {
+    travelDetail.value = inputValue;
+    travelDetail.catagory = inputCategory;
+    travelDetail.cost = inputCost;
     this.setState({
-      inputComponent: [...this.state.inputComponent]
+      listOfLocationsPerDay: [...this.state.listOfLocationsPerDay]
     });
   };
 
   deleteLocation = travelDetail => {
     this.setState({
-      inputComponent: [
-        ...this.state.inputComponent.filter(item => item !== travelDetail)
+      listOfLocationsPerDay: [
+        ...this.state.listOfLocationsPerDay.filter(
+          item => item !== travelDetail
+        )
       ]
     });
   };
 
   render() {
-    console.log(this.state.inputComponent);
+    // console.log(this.state.listOfLocationsPerDay);
     return (
       <div>
-        <button onClick={this.addOneLocation}>
+        <button
+          data-testid={"add_button_for_each_date"}
+          onClick={this.addOneLocation}
+        >
           <i className="fas fa-plus"></i>
         </button>
-        {this.state.inputComponent.map(travelDetail => {
+        {this.state.listOfLocationsPerDay.map(travelDetail => {
           return (
             <AddInputLocationBox
               key={travelDetail.id}
               travelDetail={travelDetail}
-              updateLocation={val => this.updateLocation(travelDetail, val)}
+              updateLocation={(val, cat, cost) =>
+                this.updateLocation(travelDetail, val, cat, cost)
+              }
               deleteItem={() => this.deleteLocation(travelDetail)}
             />
           );

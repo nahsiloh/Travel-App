@@ -56,22 +56,28 @@ class GenerateItinerary extends React.Component {
 
   render() {
     return (
-      <div className={"setDate_container"}>
-        <DateRangePicker
-          startDate={this.state.startDate}
-          startDateId="departure_date"
-          endDate={this.state.endDate}
-          endDateId="return_date"
-          onDatesChange={({ startDate, endDate }) =>
-            this.setState({ startDate, endDate })
-          }
-          focusedInput={this.state.focusedInput}
-          onFocusChange={focusedInput => this.setState({ focusedInput })}
-        />
-        <button className={"submit_button"} onClick={this.generateItinerary}>
+      <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
+        <div className={"set_date_container"}>
+          <DateRangePicker
+            startDate={this.state.startDate}
+            startDateId="departure_date"
+            endDate={this.state.endDate}
+            endDateId="return_date"
+            onDatesChange={({ startDate, endDate }) =>
+              this.setState({ startDate, endDate })
+            }
+            focusedInput={this.state.focusedInput}
+            onFocusChange={focusedInput => this.setState({ focusedInput })}
+          />
+        </div>
+        <button
+          data-testid={"submitDateButton"}
+          className={"submit_date_button"}
+          onClick={this.generateItinerary}
+        >
           Lets fly!
         </button>
-        <div>{this.state.travelDates}</div>
+        <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>
     );
   }
