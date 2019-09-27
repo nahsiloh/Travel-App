@@ -1,5 +1,10 @@
 import React from "react";
-import { render, fireEvent, getByTestId } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  getByTestId,
+  getByLabelText
+} from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import AddInputLocationBox from "./add_input_component";
 
@@ -9,6 +14,7 @@ describe("Add Location for Each Day", () => {
   let travelDetail;
 
   beforeEach(() => {
+    updateLocation.mockRestore();
     travelDetail = {
       id: 1,
       value: "",
@@ -117,19 +123,31 @@ describe("Add Location for Each Day", () => {
     expect(getCategory).not.toBeInTheDocument();
   });
 
-  // it("should be able to save the Cost input", () => {
-  //   const { queryByPlaceholderText, getByTestId } = renderAddInputLocationBox();
-  //   const getCost = queryByPlaceholderText("Cost");
+  it("should be able to input the Cost item", () => {
+    const { getByLabelText, getByDisplayValue } = renderAddInputLocationBox();
+    const getCost = getByLabelText("cost_input_box");
+
+    fireEvent.change(getCost, { target: { value: "100" } });
+    expect(getByDisplayValue("100")).toBeInTheDocument();
+  });
+
+  // it("should not on save display cost of $0 ", () => {
+  //   const {
+  //     getByLabelText,
+  //     getByTestId,
+  //     getByText
+  //   } = renderAddInputLocationBox();
+  //   // const getCost = getByLabelText("cost_input_box");
   //   const getSaveInputButton = getByTestId("save_item");
+  //   const getInputLocation = getByLabelText("location_input_box");
 
-  //   fireEvent.change(getCost, { target: { cost: "100" } });
+  //   fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
+  //   // expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
+
   //   fireEvent.click(getSaveInputButton);
-  //   expect(updateLocation).toBeCalledWith("", "accommodation", "100");
+  //   expect(updateLocation).toBeCalledWith("Disneyland", "accommodation", "");
 
-  //   const a = new updateLocation();
-  //   const b = {};
-  //   const bound = updateLocation.bind(b);
-  //   bound();
-  //   console.log(updateLocation.mock.instances);
+  //   // const getCostDisplay = getByTestId("cost_display");
+  //   expect(getByText("$0")).not.toBeInTheDocument();
   // });
 });

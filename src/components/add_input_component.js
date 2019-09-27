@@ -1,4 +1,5 @@
 import React from "react";
+import "./add_input_components.css";
 
 class AddInputLocationBox extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class AddInputLocationBox extends React.Component {
 
   createInputBox = () => {
     return (
-      <div>
+      <div className={"input_box_container"}>
         <select
           value={this.state.oneInputCategory}
           onChange={this.handleSelectCatagoryChange}
@@ -53,14 +54,16 @@ class AddInputLocationBox extends React.Component {
           <option value="transportation">Transportation</option>
           <option value="other">Other</option>
         </select>
-        <input
+        <textarea
           type="text"
+          aria-label="location_input_box"
           onChange={this.handleInputChange}
           value={this.state.oneInputValue}
           placeholder={"Location"}
         />
         <input
           type="number"
+          aria-label="cost_input_box"
           min="0"
           onChange={this.handleCostInputChange}
           value={this.state.oneInputCost}
@@ -102,7 +105,7 @@ class AddInputLocationBox extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={"input_display_container"}>
         {this.state.toggleInputBoxShow && <this.createInputBox />}
         {!this.state.toggleInputBoxShow && (
           <div>

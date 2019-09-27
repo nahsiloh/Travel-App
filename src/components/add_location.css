@@ -1,0 +1,15 @@
+@import "../App.css";
+@import "../common/buttons.css";
+
+#add_button_for_each_date {
+  background-color: #aab7bd;
+}
+
+#add_button_for_each_date:hover {
+  background-color: #5f9595;
+}
+
+.each_date {
+  display: flex;
+  align-items: flex-start;
+}

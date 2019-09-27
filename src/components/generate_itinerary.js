@@ -6,7 +6,7 @@ import "react-dates/lib/css/_datepicker.css";
 
 import "./generate_itinerary.css";
 
-import { formatDate } from "./format_dates";
+import { formatDate, formatDay } from "./format_dates";
 import AddLocationForEachDay from "./add_location";
 
 import Moment from "moment";
@@ -34,8 +34,11 @@ class GenerateItinerary extends React.Component {
     const listDates = Array.from(dateRange.by("days"));
     return listDates.map(day => {
       return (
-        <div key={day}>
-          <p>{formatDate(day)}</p>
+        <div key={day} className={"print_date"}>
+          <div className={"dates"}>
+            <p className={"display_dates"}>{formatDate(day)}</p>
+            <p className={"display_dates"}>{formatDay(day)}</p>
+          </div>
           <AddLocationForEachDay />
         </div>
       );
@@ -75,7 +78,7 @@ class GenerateItinerary extends React.Component {
           className={"submit_date_button"}
           onClick={this.generateItinerary}
         >
-          Lets fly!
+          <i className="far fa-paper-plane"></i>
         </button>
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>

@@ -1,0 +1,16 @@
+#add_button_for_each_date,
+.submit_date_button {
+  border-radius: 30px;
+  display: inline-block;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-decoration: none;
+  margin: 10px;
+}
+
+#add_button_for_each_date,
+.submit_date_button :active {
+  position: relative;
+  top: 1px;
+}

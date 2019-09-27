@@ -26,4 +26,28 @@ describe("Add Location for Each Day", () => {
     fireEvent.click(deleteItemButton);
     expect(deleteItemButton).not.toBeInTheDocument();
   });
+
+  // it("should not on save display cost of $0 ", () => {
+  //   const { getAllByTestId, getByLabelText, getByTestId, getByText } = render(
+  //     <AddLocationForEachDay />
+  //   );
+
+  //   const addAllLocation = getAllByTestId("add_button_for_each_date");
+  //   const getFirstButton = addAllLocation[0];
+  //   fireEvent.click(getFirstButton);
+
+  //   const getSaveInputButton = getByTestId("save_item");
+  //   const getInputLocation = getByLabelText("location_input_box");
+
+  //   fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
+  //   // expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
+
+  //   fireEvent.click(getSaveInputButton);
+  //   const updateLocation = jest.fn();
+
+  //   expect(updateLocation).toBeCalledWith("Disneyland", "accommodation", "");
+
+  //   // const getCostDisplay = getByTestId("cost_display");
+  //   expect(getByText("$0")).not.toBeInTheDocument();
+  // });
 });

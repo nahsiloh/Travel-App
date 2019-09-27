@@ -1,0 +1,38 @@
+@import "../App.css";
+
+select,
+input,
+textarea {
+  display: list-item;
+  list-style: none;
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  width: 180px;
+  border-bottom: 0.5px solid grey;
+}
+
+textarea {
+  resize: none;
+  padding: 0;
+  height: 4em;
+}
+
+.input_box_container,
+.input_display_container {
+  background-color: #f4efe9;
+  width: 200px;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+  margin-bottom: 15px;
+}
+
+button {
+  margin-top: 5px;
+  margin-right: 2.5px;
+  margin-left: 2.5px;
+  background-color: #dcdfe4;
+  border-radius: 5px;
+}
