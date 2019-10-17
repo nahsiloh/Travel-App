@@ -1,12 +1,14 @@
 import React from "react";
 import "./App.css";
-import GenerateItinerary from "./components/generate_itinerary";
+import CurrencyConverter from "./common/currency_converter";
+import DatePicker from "./components/date_picker";
 
 function App() {
   return (
     <div className="App">
       <h1>Lets plan your next trip!</h1>
-      <GenerateItinerary />
+      <DatePicker />
+      {/* <CurrencyConverter /> */}
     </div>
   );
 }

@@ -1,26 +1,30 @@
 import React from "react";
+import axios from "axios";
 
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
 
-import "./generate_itinerary.css";
+import "../static/date_picker.css";
 
 import { formatDate, formatDay } from "./format_dates";
-import AddLocationForEachDay from "./add_location";
+import AddLocationForEachDay from "./add_location_for_each_day";
+import SelectCountry from "./select_country";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
 
-class GenerateItinerary extends React.Component {
+// const baseUrl = "http://localhost:5000";
+
+class DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       startDate: moment(),
       endDate: moment().add(7, "days"),
-      dateDifference: "",
       travelDates: []
+      // trip: { itinerary: [] }
     };
   }
 
@@ -29,29 +33,44 @@ class GenerateItinerary extends React.Component {
     return diffDay + 1;
   };
 
+  // fetchItinerary = () => {
+  //   const url = `${baseUrl}/trips/5da68f857e86df5654306ff7`;
+  //   axios
+  //     .get(url, { withCredentials: true })
+  //     .then(res => {
+  //       this.setState({
+  //         trip: res.data
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+
   printDatesList = () => {
     const dateRange = moment.range(this.state.startDate, this.state.endDate);
     const listDates = Array.from(dateRange.by("days"));
-    return listDates.map(day => {
-      return (
-        <div key={day} className={"print_date"}>
-          <div className={"dates"}>
-            <p className={"display_dates"}>{formatDate(day)}</p>
-            <p className={"display_dates"}>{formatDay(day)}</p>
-          </div>
-          <AddLocationForEachDay />
-        </div>
-      );
-    });
+    return (
+      <div>
+        {listDates.map(day => {
+          return (
+            <div key={day} className={"print_date"}>
+              <div className={"dates"}>
+                <p className={"display_dates"}>{formatDate(day)}</p>
+                <p className={"display_dates"}>{formatDay(day)}</p>
+              </div>
+              <AddLocationForEachDay />
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   generateItinerary = () => {
-    const displayDays = this.countDays();
     const travelDates = this.printDatesList();
-
     this.setState(() => {
       return {
-        dateDifference: displayDays,
         travelDates
       };
     });
@@ -73,6 +92,8 @@ class GenerateItinerary extends React.Component {
             onFocusChange={focusedInput => this.setState({ focusedInput })}
           />
         </div>
+        {/* <p>DESTINATION</p> */}
+        {/* <SelectCountry /> */}
         <button
           data-testid={"submitDateButton"}
           className={"submit_date_button"}
@@ -80,10 +101,28 @@ class GenerateItinerary extends React.Component {
         >
           <i className="far fa-paper-plane"></i>
         </button>
+
+        <button onClick={this.saveItinerary}>Save itinerary</button>
+
+        {/* <button onClick={this.fetchItinerary}>Get itinerary</button>
+
+        <div>
+          {this.state.trip.itinerary.map(i => {
+            return (
+              <div key={i._id}>
+                <p>{i.program}</p>
+                <p>{i.destination}</p>
+                <p>{i.cost}</p>
+                <p>{i.date}</p>
+              </div>
+            );
+          })}
+        </div> */}
+
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>
     );
   }
 }
 
-export default GenerateItinerary;
+export default DatePicker;

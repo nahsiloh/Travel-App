@@ -1,54 +1,51 @@
 import React from "react";
-import "./add_input_components.css";
+import "../static/add_input_location_box.css";
 
 class AddInputLocationBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      toggleInputBoxShow: true,
-      oneInputValue: "",
-      oneInputCategory: "accommodation",
-      oneInputCost: ""
+      shouldShowInputBox: true,
+      destination: "",
+      program: "accommodation",
+      cost: ""
     };
   }
 
-  handleInputChange = event => {
+  handleDestinationChange = event => {
     this.setState({
-      oneInputValue: event.target.value
+      destination: event.target.value
     });
   };
 
-  handleCostInputChange = event => {
+  handleCostChange = event => {
     this.setState({
-      oneInputCost: event.target.value
+      cost: event.target.value
     });
   };
 
-  handleSelectCatagoryChange = event => {
-    this.setState({ oneInputCategory: event.target.value });
+  handleProgramChange = event => {
+    this.setState({ program: event.target.value });
   };
 
   saveItem = () => {
-    if (this.state.oneInputValue.length === 0) {
+    if (this.state.destination.length === 0) {
       return;
     }
     this.setState({
-      toggleInputBoxShow: false
+      shouldShowInputBox: false
     });
     this.props.updateLocation(
-      this.state.oneInputValue,
-      this.state.oneInputCategory,
-      this.state.oneInputCost
+      this.state.destination,
+      this.state.program,
+      this.state.cost
     );
   };
 
   createInputBox = () => {
     return (
       <div className={"input_box_container"}>
-        <select
-          value={this.state.oneInputCategory}
-          onChange={this.handleSelectCatagoryChange}
-        >
+        <select value={this.state.program} onChange={this.handleProgramChange}>
           <option value="accommodation">Accommodation</option>
           <option value="attractions">Attractions</option>
           <option value="transportation">Transportation</option>
@@ -57,16 +54,16 @@ class AddInputLocationBox extends React.Component {
         <textarea
           type="text"
           aria-label="location_input_box"
-          onChange={this.handleInputChange}
-          value={this.state.oneInputValue}
+          onChange={this.handleDestinationChange}
+          value={this.state.destination}
           placeholder={"Location"}
         />
         <input
           type="number"
           aria-label="cost_input_box"
           min="0"
-          onChange={this.handleCostInputChange}
-          value={this.state.oneInputCost}
+          onChange={this.handleCostChange}
+          value={this.state.cost}
           placeholder={"Cost"}
         />
         <button data-testid={"save_item"} onClick={this.saveItem}>
@@ -80,7 +77,7 @@ class AddInputLocationBox extends React.Component {
   };
 
   editItem = () => {
-    this.setState({ toggleInputBoxShow: true });
+    this.setState({ shouldShowInputBox: true });
   };
 
   editAndDeleteButtons = () => {
@@ -97,20 +94,21 @@ class AddInputLocationBox extends React.Component {
   };
 
   printCostIfMoreThanZero = () => {
-    if (Number(this.state.oneInputCost) <= 0) {
+    if (Number(this.state.cost) <= 0) {
       return;
     }
-    return <p>{`$${this.state.oneInputCost}`}</p>;
+    return <p>{`$${this.state.cost}`}</p>;
   };
 
   render() {
     return (
       <div className={"input_display_container"}>
-        {this.state.toggleInputBoxShow && <this.createInputBox />}
-        {!this.state.toggleInputBoxShow && (
+        {this.state.shouldShowInputBox ? (
+          <this.createInputBox />
+        ) : (
           <div>
-            <p>{this.props.travelDetail.catagory}</p>
-            <p>{this.props.travelDetail.value}</p>
+            <p>{this.props.travelDetail.program}</p>
+            <p>{this.props.travelDetail.destination}</p>
             {this.printCostIfMoreThanZero()}
             <this.editAndDeleteButtons />
           </div>
@@ -119,4 +117,5 @@ class AddInputLocationBox extends React.Component {
     );
   }
 }
+
 export default AddInputLocationBox;

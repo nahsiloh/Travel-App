@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import AddLocationForEachDay from "./add_location";
+import AddLocationForEachDay from "../components/add_location_for_each_day";
 
 describe("Add Location for Each Day", () => {
   it("should be able to add 1 location input component", () => {
@@ -14,8 +14,7 @@ describe("Add Location for Each Day", () => {
     expect(getByPlaceholderText("Location")).toBeInTheDocument();
   });
 
-  //test the delete button
-  it("should before save be able to delete input", () => {
+  it("should be able to delete input", () => {
     const { getByTestId, getAllByTestId } = render(<AddLocationForEachDay />);
 
     const addAllLocation = getAllByTestId("add_button_for_each_date");
