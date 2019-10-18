@@ -32,9 +32,19 @@ class AddInputLocationBox extends React.Component {
     if (this.state.destination.length === 0) {
       return;
     }
+
+    const itinerary = {
+      destination: this.state.destination,
+      program: this.state.program,
+      cost: this.state.cost
+    };
+
+    localStorage.setItem("cat", JSON.stringify(itinerary));
+
     this.setState({
       shouldShowInputBox: false
     });
+
     this.props.saveLocation(
       this.state.destination,
       this.state.program,

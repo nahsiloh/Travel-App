@@ -26,7 +26,9 @@ class DatePicker extends React.Component {
       startDate: moment(),
       endDate: moment().add(7, "days"),
       travelDates: [],
-      trip: {}
+      tripsData: [],
+      tripData: { name: "" },
+      tripDisplay: {}
     };
   }
 
@@ -35,8 +37,15 @@ class DatePicker extends React.Component {
     return diffDay + 1;
   };
 
+  // componentDidMount() {
+  //   const url = `${baseUrl}/trips`;
+  //   axios.get(url, { withCredentials: true }).then(res => {
+  //     this.setState({ tripsData: res.data });
+  //   });
+  // }
+
   componentDidMount() {
-    const url = `${baseUrl}/trips/5da87e9344a2330c94be22b0`;
+    const url = `${baseUrl}/trips/5da99a7d26adab73ec7faadf`;
     axios
       .get(url, { withCredentials: true })
       .then(res => {
@@ -51,22 +60,38 @@ class DatePicker extends React.Component {
           return acc;
         }, {});
 
-        this.setState({ trip: display });
-        console.log(this.state.trip);
+        this.setState({ tripDisplay: display, tripData: trip });
       })
       .catch(err => {
         console.log(err);
       });
   }
 
+  saveTrip = () => {
+    const trip = JSON.parse(localStorage.getItem("trip")) || {};
+    const itineraries = [];
+    const dates = Object.keys(trip);
+    dates.forEach(date => {
+      trip[date].forEach(travelDetail => {
+        itineraries.push(travelDetail);
+      });
+    });
+
+    const url = `${baseUrl}/trips/5da99a7d26adab73ec7faadf`;
+    axios.patch(url, { itinerary: itineraries }, { withCredentials: true });
+
+    // get data from local storage
+    //convert data to required format
+    // send data
+  };
+
   printDatesList = () => {
     let dateRange = {};
-    if (Object.entries(this.state.trip).length === 0) {
+    if (Object.entries(this.state.tripDisplay).length === 0) {
       dateRange = moment.range(this.state.startDate, this.state.endDate);
     } else {
-      const dataDate = Object.keys(this.state.trip);
-      const dataStartDate = formatDateFromAPI(dataDate[0]);
-      const dataEndDate = formatDateFromAPI(dataDate[dataDate.length - 1]);
+      const dataStartDate = formatDateFromAPI(this.state.tripData.startDate);
+      const dataEndDate = formatDateFromAPI(this.state.tripData.endDate);
       dateRange = moment.range(dataStartDate, dataEndDate);
     }
 
@@ -83,11 +108,13 @@ class DatePicker extends React.Component {
                 <p className={"display_dates"}>{formatDay(day)}</p>
               </div>
               <AddLocationForEachDay
+                date={day.toISOString()}
                 itineraryPerDay={
-                  this.state.trip[day.toISOString()]
-                    ? this.state.trip[day.toISOString()]
+                  this.state.tripDisplay[day.toISOString()]
+                    ? this.state.tripDisplay[day.toISOString()]
                     : []
                 }
+                editTrip={itineraryPerDay => this.editTrip(itineraryPerDay)}
               />
             </div>
           );
@@ -106,6 +133,7 @@ class DatePicker extends React.Component {
   };
 
   render() {
+    console.log(this.state.tripsData);
     return (
       <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
         <div className={"set_date_container"}>
@@ -131,6 +159,12 @@ class DatePicker extends React.Component {
           <i className="far fa-paper-plane"></i>
         </button>
         <button onClick={this.saveTrip}>Save Trip</button>
+
+        {/* <select>
+          {this.state.tripsData.forEach(trip => {
+            return <option value={trip.name}>{trip.name}</option>;
+          })}
+        </select> */}
 
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>
