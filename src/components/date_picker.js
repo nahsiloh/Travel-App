@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import uuidv1 from "uuid/v1";
 
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
@@ -7,15 +8,17 @@ import "react-dates/lib/css/_datepicker.css";
 
 import "../static/date_picker.css";
 
-import { formatDate, formatDay } from "./format_dates";
+import { formatDate, formatDay, formatDateFromAPI } from "./format_dates";
 import AddLocationForEachDay from "./add_location_for_each_day";
+import AddInputLocationBox from "./add_input_location_box";
 import SelectCountry from "./select_country";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import { pbkdf2 } from "crypto";
 const moment = extendMoment(Moment);
 
-// const baseUrl = "http://localhost:5000";
+const baseUrl = "http://localhost:5000";
 
 class DatePicker extends React.Component {
   constructor(props) {
@@ -23,8 +26,8 @@ class DatePicker extends React.Component {
     this.state = {
       startDate: moment(),
       endDate: moment().add(7, "days"),
-      travelDates: []
-      // trip: { itinerary: [] }
+      travelDates: [],
+      trip: {}
     };
   }
 
@@ -33,33 +36,60 @@ class DatePicker extends React.Component {
     return diffDay + 1;
   };
 
-  // fetchItinerary = () => {
-  //   const url = `${baseUrl}/trips/5da68f857e86df5654306ff7`;
-  //   axios
-  //     .get(url, { withCredentials: true })
-  //     .then(res => {
-  //       this.setState({
-  //         trip: res.data
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
+  componentDidMount() {
+    const url = `${baseUrl}/trips/5da87e9344a2330c94be22b0`;
+    axios
+      .get(url, { withCredentials: true })
+      .then(res => {
+        const trip = res.data;
+
+        const display = trip.itinerary.reduce((acc, cur) => {
+          if (Array.isArray(acc[cur.date])) {
+            acc[cur.date].push(cur);
+          } else {
+            acc[cur.date] = [cur];
+          }
+          return acc;
+        }, {});
+
+        this.setState({ trip: display });
+        console.log(this.state.trip);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   printDatesList = () => {
-    const dateRange = moment.range(this.state.startDate, this.state.endDate);
+    let dateRange = {};
+    if (Object.entries(this.state.trip).length === 0) {
+      dateRange = moment.range(this.state.startDate, this.state.endDate);
+    } else {
+      const dataDate = Object.keys(this.state.trip);
+      const dataStartDate = formatDateFromAPI(dataDate[0]);
+      const dataEndDate = formatDateFromAPI(dataDate[dataDate.length - 1]);
+      dateRange = moment.range(dataStartDate, dataEndDate);
+    }
+
     const listDates = Array.from(dateRange.by("days"));
+
     return (
       <div>
         {listDates.map(day => {
           return (
             <div key={day} className={"print_date"}>
+              {console.log("date: ", day.toISOString())}
               <div className={"dates"}>
                 <p className={"display_dates"}>{formatDate(day)}</p>
                 <p className={"display_dates"}>{formatDay(day)}</p>
               </div>
-              <AddLocationForEachDay />
+              <AddLocationForEachDay
+                itineraryPerDay={
+                  this.state.trip[day.toISOString()]
+                    ? this.state.trip[day.toISOString()]
+                    : []
+                }
+              />
             </div>
           );
         })}
@@ -101,23 +131,7 @@ class DatePicker extends React.Component {
         >
           <i className="far fa-paper-plane"></i>
         </button>
-
-        <button onClick={this.saveItinerary}>Save itinerary</button>
-
-        {/* <button onClick={this.fetchItinerary}>Get itinerary</button>
-
-        <div>
-          {this.state.trip.itinerary.map(i => {
-            return (
-              <div key={i._id}>
-                <p>{i.program}</p>
-                <p>{i.destination}</p>
-                <p>{i.cost}</p>
-                <p>{i.date}</p>
-              </div>
-            );
-          })}
-        </div> */}
+        <button onClick={this.saveTrip}>Save Trip</button>
 
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>

@@ -35,7 +35,7 @@ class AddInputLocationBox extends React.Component {
     this.setState({
       shouldShowInputBox: false
     });
-    this.props.updateLocation(
+    this.props.saveLocation(
       this.state.destination,
       this.state.program,
       this.state.cost
@@ -94,28 +94,27 @@ class AddInputLocationBox extends React.Component {
   };
 
   printCostIfMoreThanZero = () => {
-    if (Number(this.state.cost) <= 0) {
+    if (Number(this.props.travelDetail.cost) <= 0) {
       return;
     }
-    return <p>{`$${this.state.cost}`}</p>;
+    return <p>{`$${this.props.travelDetail.cost}`}</p>;
   };
 
   render() {
     return (
       <div className={"input_display_container"}>
-        {this.state.shouldShowInputBox ? (
+        {/* {this.state.shouldShowInputBox ? (
           <this.createInputBox />
-        ) : (
-          <div>
-            <p>{this.props.travelDetail.program}</p>
-            <p>{this.props.travelDetail.destination}</p>
-            {this.printCostIfMoreThanZero()}
-            <this.editAndDeleteButtons />
-          </div>
-        )}
+        ) : ( */}
+        <div>
+          <p>{this.props.travelDetail.program}</p>
+          <p>{this.props.travelDetail.destination}</p>
+          {this.printCostIfMoreThanZero()}
+          <this.editAndDeleteButtons />
+        </div>
+        {/* )} */}
       </div>
     );
   }
 }
-
 export default AddInputLocationBox;
