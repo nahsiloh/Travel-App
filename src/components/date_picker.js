@@ -15,7 +15,6 @@ import SelectCountry from "./select_country";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
-import { pbkdf2 } from "crypto";
 const moment = extendMoment(Moment);
 
 const baseUrl = "http://localhost:5000";
