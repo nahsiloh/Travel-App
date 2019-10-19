@@ -55,26 +55,11 @@ class TripSelector extends React.Component {
 
           this.setState({ tripDisplay: display, tripData: trip });
         })
-        .then(<p>Hello</p>)
         .catch(err => {
           console.log(err);
         });
-
-      // <ExistingTrip
-      //   tripData={this.state.tripData}
-      //   tripDisplay={this.state.tripDisplay}
-      // />;
     }
   };
-
-  // getNewOrExisting = () => {
-  //   const tripId = this.state.tripName;
-  //   if (!!tripId === true) {
-  //     return <ExistingTrip />;
-  //   } else {
-  //     return <DatePicker />;
-  //   }
-  // };
 
   render() {
     return (
@@ -90,6 +75,7 @@ class TripSelector extends React.Component {
           <i className="far fa-paper-plane"></i>
         </button>
         <ExistingTrip
+          tripId={this.state.tripName}
           tripData={this.state.tripData}
           tripDisplay={this.state.tripDisplay}
         />

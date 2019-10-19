@@ -9,12 +9,7 @@ function App() {
   return (
     <div className="App">
       <h1>Lets plan your next trip!</h1>
-
       <TripSelector />
-
-      {/* <DatePicker /> */}
-      {/* <ExistingTrip /> */}
-      {/* <CurrencyConverter /> */}
     </div>
   );
 }

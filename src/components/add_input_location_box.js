@@ -39,8 +39,6 @@ class AddInputLocationBox extends React.Component {
       cost: this.state.cost
     };
 
-    localStorage.setItem("cat", JSON.stringify(itinerary));
-
     this.setState({
       shouldShowInputBox: false
     });

@@ -37,6 +37,7 @@ class AddLocationForEachDay extends React.Component {
     });
 
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
+    console.log(trip);
     trip[this.props.date] = this.state.itineraryPerDay;
     localStorage.setItem("trip", JSON.stringify(trip));
   };
@@ -47,10 +48,16 @@ class AddLocationForEachDay extends React.Component {
         ...this.state.itineraryPerDay.filter(item => item !== travelDetail)
       ]
     });
-  };
 
-  saveTrip = () => {
-    this.props.editTrip(this.state.itineraryPerDay);
+    const trip = JSON.parse(localStorage.getItem("trip")) || {};
+
+    const newTripArray = trip[this.props.date].filter(trip => {
+      return JSON.stringify(trip) !== JSON.stringify(travelDetail);
+    });
+
+    trip[this.props.date] = newTripArray;
+
+    localStorage.setItem("trip", JSON.stringify(trip));
   };
 
   render() {

@@ -61,6 +61,8 @@ class DatePicker extends React.Component {
 
     const url = `${baseUrl}/trips/new`;
     axios.post(url, newTrip, { withCredentials: true });
+
+    localStorage.removeItem("trip");
   };
 
   printDatesList = () => {

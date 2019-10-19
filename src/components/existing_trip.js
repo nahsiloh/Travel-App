@@ -34,6 +34,8 @@ class ExistingTrip extends React.Component {
 
   saveTrip = () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
+    console.log(this.props.tripId);
+
     const itineraries = [];
     const dates = Object.keys(trip);
     dates.forEach(date => {
@@ -41,8 +43,11 @@ class ExistingTrip extends React.Component {
         itineraries.push(travelDetail);
       });
     });
-    const url = `${baseUrl}/trips/5da99a7d26adab73ec7faadf`;
+
+    const url = `${baseUrl}/trips/${this.props.tripId}`;
     axios.patch(url, { itinerary: itineraries }, { withCredentials: true });
+
+    localStorage.removeItem("trip");
   };
 
   printDatesList = () => {
