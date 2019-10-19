@@ -2,13 +2,13 @@ import React from "react";
 import axios from "axios";
 import uuidv1 from "uuid/v1";
 
-import "react-dates/initialize";
-import { DateRangePicker } from "react-dates";
-import "react-dates/lib/css/_datepicker.css";
+// import "react-dates/initialize";
+// import { DateRangePicker } from "react-dates";
+// import "react-dates/lib/css/_datepicker.css";
 
 import "../static/date_picker.css";
 
-import { formatDate, formatDay } from "./format_dates";
+import { formatDate, formatDay, formatDateFromAPI } from "./format_dates";
 import AddLocationForEachDay from "./add_location_for_each_day";
 import AddInputLocationBox from "./add_input_location_box";
 import SelectCountry from "./select_country";
@@ -19,29 +19,21 @@ const moment = extendMoment(Moment);
 
 const baseUrl = "http://localhost:5000";
 
-class DatePicker extends React.Component {
+class ExistingTrip extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      startDate: moment(),
-      endDate: moment().add(7, "days"),
-      travelDates: [],
-      name: ""
+      travelDates: []
     };
   }
-
-  handleNameChange = event => {
-    this.setState({ name: event.target.value });
-  };
 
   countDays = () => {
     const diffDay = this.state.endDate.diff(this.state.startDate, "days");
     return diffDay + 1;
   };
 
-  saveNewTrip = () => {
+  saveTrip = () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
-
     const itineraries = [];
     const dates = Object.keys(trip);
     dates.forEach(date => {
@@ -49,22 +41,15 @@ class DatePicker extends React.Component {
         itineraries.push(travelDetail);
       });
     });
-
-    console.log(itineraries);
-
-    const newTrip = {
-      name: `${this.state.name}`,
-      startDate: `${this.state.startDate}`,
-      endDate: `${this.state.endDate}`,
-      itinerary: itineraries
-    };
-
-    const url = `${baseUrl}/trips/new`;
-    axios.post(url, newTrip, { withCredentials: true });
+    const url = `${baseUrl}/trips/5da99a7d26adab73ec7faadf`;
+    axios.patch(url, { itinerary: itineraries }, { withCredentials: true });
   };
 
   printDatesList = () => {
-    const dateRange = moment.range(this.state.startDate, this.state.endDate);
+    const dataStartDate = formatDateFromAPI(this.props.tripData.startDate);
+    const dataEndDate = formatDateFromAPI(this.props.tripData.endDate);
+    const dateRange = moment.range(dataStartDate, dataEndDate);
+
     const listDates = Array.from(dateRange.by("days"));
 
     return (
@@ -104,28 +89,6 @@ class DatePicker extends React.Component {
   render() {
     return (
       <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
-        <input
-          type="string"
-          onChange={this.handleNameChange}
-          value={this.state.name}
-          placeholder={"Trip Name"}
-          defaultValue="Test trip"
-        />
-        <div className={"set_date_container"}>
-          <DateRangePicker
-            startDate={this.state.startDate}
-            startDateId="departure_date"
-            endDate={this.state.endDate}
-            endDateId="return_date"
-            onDatesChange={({ startDate, endDate }) =>
-              this.setState({ startDate, endDate })
-            }
-            focusedInput={this.state.focusedInput}
-            onFocusChange={focusedInput => this.setState({ focusedInput })}
-          />
-        </div>
-        {/* <p>DESTINATION</p> */}
-        {/* <SelectCountry /> */}
         <button
           data-testid={"submitDateButton"}
           className={"submit_date_button"}
@@ -133,7 +96,7 @@ class DatePicker extends React.Component {
         >
           <i className="far fa-paper-plane"></i>
         </button>
-        <button onClick={this.saveNewTrip}>Save Trip</button>
+        <button onClick={this.saveTrip}>Save Trip</button>
 
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>
@@ -141,4 +104,4 @@ class DatePicker extends React.Component {
   }
 }
 
-export default DatePicker;
+export default ExistingTrip;

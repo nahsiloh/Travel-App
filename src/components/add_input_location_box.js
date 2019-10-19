@@ -8,7 +8,7 @@ class AddInputLocationBox extends React.Component {
       shouldShowInputBox: true,
       destination: "",
       program: "accommodation",
-      cost: ""
+      cost: 0
     };
   }
 
