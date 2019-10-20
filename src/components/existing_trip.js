@@ -23,7 +23,9 @@ class ExistingTrip extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      travelDates: []
+      travelDates: [],
+      tripData: { name: "" },
+      tripDisplay: {}
     };
   }
 
@@ -31,6 +33,31 @@ class ExistingTrip extends React.Component {
     const diffDay = this.state.endDate.diff(this.state.startDate, "days");
     return diffDay + 1;
   };
+
+  componentDidMount() {
+    const url = `${baseUrl}/trips/` + this.props.tripId;
+    axios
+      .get(url, { withCredentials: true })
+      .then(res => {
+        const trip = res.data;
+        console.log(trip);
+        localStorage.setItem(`${this.props.tripId}`, JSON.stringify(trip));
+
+        const display = trip.itinerary.reduce((acc, cur) => {
+          if (Array.isArray(acc[cur.date])) {
+            acc[cur.date].push(cur);
+          } else {
+            acc[cur.date] = [cur];
+          }
+          return acc;
+        }, {});
+
+        this.setState({ tripDisplay: display, tripData: trip });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   saveTrip = () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
@@ -51,8 +78,8 @@ class ExistingTrip extends React.Component {
   };
 
   printDatesList = () => {
-    const dataStartDate = formatDateFromAPI(this.props.tripData.startDate);
-    const dataEndDate = formatDateFromAPI(this.props.tripData.endDate);
+    const dataStartDate = formatDateFromAPI(this.state.tripData.startDate);
+    const dataEndDate = formatDateFromAPI(this.state.tripData.endDate);
     const dateRange = moment.range(dataStartDate, dataEndDate);
 
     const listDates = Array.from(dateRange.by("days"));
@@ -70,8 +97,8 @@ class ExistingTrip extends React.Component {
               <AddLocationForEachDay
                 date={day.toISOString()}
                 itineraryPerDay={
-                  this.props.tripDisplay[day.toISOString()]
-                    ? this.props.tripDisplay[day.toISOString()]
+                  this.state.tripDisplay[day.toISOString()]
+                    ? this.state.tripDisplay[day.toISOString()]
                     : []
                 }
               />

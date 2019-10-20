@@ -10,9 +10,9 @@ class TripSelector extends React.Component {
     super(props);
     this.state = {
       tripsData: [],
-      tripName: "",
-      tripData: { name: "" },
-      tripDisplay: {}
+      tripName: ""
+      // tripData: { name: "" },
+      // tripDisplay: {}
     };
   }
 
@@ -32,58 +32,64 @@ class TripSelector extends React.Component {
     this.setState({ tripName: event.target.value });
   };
 
+  // fetchTrip = () => {
+  //   const url = `${baseUrl}/trips/` + this.state.tripName;
+
+  //   axios
+  //     .get(url, { withCredentials: true })
+  //     .then(res => {
+  //       const trip = res.data;
+  //       console.log(trip);
+  //       localStorage.setItem(`${this.state.tripName}`, JSON.stringify(trip));
+
+  //       const display = trip.itinerary.reduce((acc, cur) => {
+  //         if (Array.isArray(acc[cur.date])) {
+  //           acc[cur.date].push(cur);
+  //         } else {
+  //           acc[cur.date] = [cur];
+  //         }
+  //         return acc;
+  //       }, {});
+
+  //       this.setState({ tripDisplay: display, tripData: trip });
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+
   selectTrip = () => {
-    if (!!this.state.tripName === true) {
-      const url = `${baseUrl}/trips/` + this.state.tripName;
-      console.log(url);
+    if (this.state.tripName.length === 0) {
+      return (
+        <DatePicker
+          tripData={this.state.tripData}
+          tripDisplay={this.state.tripDisplay}
+        />
+      );
+    } else {
+      // this.fetchTrip();
 
-      axios
-        .get(url, { withCredentials: true })
-        .then(res => {
-          const trip = res.data;
-          console.log(trip);
-          localStorage.setItem(`${this.state.tripName}`, JSON.stringify(trip));
-
-          const display = trip.itinerary.reduce((acc, cur) => {
-            if (Array.isArray(acc[cur.date])) {
-              acc[cur.date].push(cur);
-            } else {
-              acc[cur.date] = [cur];
-            }
-            return acc;
-          }, {});
-
-          this.setState({ tripDisplay: display, tripData: trip });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      return (
+        <ExistingTrip
+          tripId={this.state.tripName}
+          // tripData={this.state.tripData}
+          // tripDisplay={this.state.tripDisplay}
+        />
+      );
     }
   };
 
   render() {
     return (
       <div>
-        Trip Selector
+        <p>Select Your Trip</p>
         <select value={this.state.tripName} onChange={this.handleTripSelector}>
           <option>Create a new Itinerary</option>
           {this.state.tripsData.map(trip => {
             return <option value={trip._id}>{trip.name}</option>;
           })}
         </select>
-        <button className={"submit_date_button"} onClick={this.selectTrip}>
-          <i className="far fa-paper-plane"></i>
-        </button>
-        <ExistingTrip
-          tripId={this.state.tripName}
-          tripData={this.state.tripData}
-          tripDisplay={this.state.tripDisplay}
-        />
-        <DatePicker
-          tripData={this.state.tripData}
-          tripDisplay={this.state.tripDisplay}
-        />
-        {/* <this.getNewOrExisting /> */}
+        <this.selectTrip />
       </div>
     );
   }
