@@ -26,7 +26,8 @@ class DatePicker extends React.Component {
       startDate: moment(),
       endDate: moment().add(7, "days"),
       travelDates: [],
-      name: ""
+      name: "",
+      tripDisplay: {}
     };
   }
 
@@ -50,8 +51,6 @@ class DatePicker extends React.Component {
       });
     });
 
-    console.log(itineraries);
-
     const newTrip = {
       name: `${this.state.name}`,
       startDate: `${this.state.startDate}`,
@@ -63,6 +62,8 @@ class DatePicker extends React.Component {
     axios.post(url, newTrip, { withCredentials: true });
 
     localStorage.removeItem("trip");
+
+    window.location = "/selecttrip";
   };
 
   printDatesList = () => {
@@ -82,8 +83,8 @@ class DatePicker extends React.Component {
               <AddLocationForEachDay
                 date={day.toISOString()}
                 itineraryPerDay={
-                  this.props.tripDisplay[day.toISOString()]
-                    ? this.props.tripDisplay[day.toISOString()]
+                  this.state.tripDisplay[day.toISOString()]
+                    ? this.state.tripDisplay[day.toISOString()]
                     : []
                 }
               />
@@ -96,6 +97,9 @@ class DatePicker extends React.Component {
 
   generateItinerary = () => {
     const travelDates = this.printDatesList();
+
+    localStorage.clear("trip");
+
     this.setState(() => {
       return {
         travelDates
@@ -110,7 +114,7 @@ class DatePicker extends React.Component {
           type="string"
           onChange={this.handleNameChange}
           value={this.state.name}
-          placeholder={"Trip Name"}
+          placeholder="Trip Name"
           defaultValue="Test trip"
         />
         <div className={"set_date_container"}>

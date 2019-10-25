@@ -8,18 +8,18 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      password: "",
+      loginField: {
+        username: "",
+        password: ""
+      },
       isLoggedIn: false
     };
   }
 
-  handleUsernameChange = event => {
-    this.setState({ username: event.target.value });
-  };
-
-  handlePasswordChange = event => {
-    this.setState({ password: event.target.value });
+  handleLoginChange = event => {
+    const loginField = this.state.loginField;
+    loginField[event.target.name] = event.target.value;
+    this.setState({ loginField });
   };
 
   loginHandler = () => {
@@ -48,15 +48,17 @@ class Login extends React.Component {
     return (
       <div>
         <input
+          name="username"
           type="string"
-          onChange={this.handleUsernameChange}
+          onChange={this.handleLoginChange}
           value={this.state.username}
           placeholder="Username"
         />
         <input
+          name="password"
           type="string"
-          onChange={this.handlePasswordChange}
-          value={this.state.username}
+          onChange={this.handleLoginChange}
+          value={this.state.password}
           placeholder="Password"
         />
         <Link to="/selecttrip">

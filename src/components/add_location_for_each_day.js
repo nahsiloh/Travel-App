@@ -21,7 +21,7 @@ class AddLocationForEachDay extends React.Component {
           destination: "",
           program: "",
           cost: "",
-          date: this.props.date
+          date: this.props.dateToSave
         }
       ]
     });
@@ -38,7 +38,7 @@ class AddLocationForEachDay extends React.Component {
 
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
     console.log(trip);
-    trip[this.props.date] = this.state.itineraryPerDay;
+    trip[this.props.dateToDisplay] = this.state.itineraryPerDay;
     localStorage.setItem("trip", JSON.stringify(trip));
   };
 
@@ -49,13 +49,25 @@ class AddLocationForEachDay extends React.Component {
       ]
     });
 
-    const trip = JSON.parse(localStorage.getItem("trip")) || {};
+    const trip =
+      JSON.parse(localStorage.getItem("trip")) ||
+      // JSON.parse(localStorage.getItem(this.props.tripId)) ||
+      {};
 
+    // trip === JSON.parse(localStorage.getItem("trip"));
+    //condition if data is not saved to server yet
     const newTripArray = trip[this.props.date].filter(trip => {
       return JSON.stringify(trip) !== JSON.stringify(travelDetail);
     });
 
     trip[this.props.date] = newTripArray;
+    // } else if (trip === JSON.parse(localStorage.getItem(this.props.tripId))) {
+    //   //condition if data is already saved in server
+    //   const newTripArray = trip.itinerary.filter(trip => {
+    //     return trip !== travelDetail;
+    //   });
+    //   this.props.trip.itinerary = newTripArray;
+    // }
 
     localStorage.setItem("trip", JSON.stringify(trip));
   };

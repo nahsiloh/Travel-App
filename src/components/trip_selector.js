@@ -11,8 +11,6 @@ class TripSelector extends React.Component {
     this.state = {
       tripsData: [],
       tripName: ""
-      // tripData: { name: "" },
-      // tripDisplay: {}
     };
   }
 
@@ -32,50 +30,11 @@ class TripSelector extends React.Component {
     this.setState({ tripName: event.target.value });
   };
 
-  // fetchTrip = () => {
-  //   const url = `${baseUrl}/trips/` + this.state.tripName;
-
-  //   axios
-  //     .get(url, { withCredentials: true })
-  //     .then(res => {
-  //       const trip = res.data;
-  //       console.log(trip);
-  //       localStorage.setItem(`${this.state.tripName}`, JSON.stringify(trip));
-
-  //       const display = trip.itinerary.reduce((acc, cur) => {
-  //         if (Array.isArray(acc[cur.date])) {
-  //           acc[cur.date].push(cur);
-  //         } else {
-  //           acc[cur.date] = [cur];
-  //         }
-  //         return acc;
-  //       }, {});
-
-  //       this.setState({ tripDisplay: display, tripData: trip });
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-
   selectTrip = () => {
     if (this.state.tripName.length === 0) {
-      return (
-        <DatePicker
-          tripData={this.state.tripData}
-          tripDisplay={this.state.tripDisplay}
-        />
-      );
+      // return <DatePicker />;
     } else {
-      // this.fetchTrip();
-
-      return (
-        <ExistingTrip
-          tripId={this.state.tripName}
-          // tripData={this.state.tripData}
-          // tripDisplay={this.state.tripDisplay}
-        />
-      );
+      return <ExistingTrip tripId={this.state.tripName} />;
     }
   };
 
@@ -89,7 +48,7 @@ class TripSelector extends React.Component {
             return <option value={trip._id}>{trip.name}</option>;
           })}
         </select>
-        <this.selectTrip />
+        {this.selectTrip()}
       </div>
     );
   }

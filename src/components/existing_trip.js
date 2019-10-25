@@ -2,16 +2,10 @@ import React from "react";
 import axios from "axios";
 import uuidv1 from "uuid/v1";
 
-// import "react-dates/initialize";
-// import { DateRangePicker } from "react-dates";
-// import "react-dates/lib/css/_datepicker.css";
-
 import "../static/date_picker.css";
 
 import { formatDate, formatDay, formatDateFromAPI } from "./format_dates";
 import AddLocationForEachDay from "./add_location_for_each_day";
-import AddInputLocationBox from "./add_input_location_box";
-import SelectCountry from "./select_country";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
@@ -29,19 +23,16 @@ class ExistingTrip extends React.Component {
     };
   }
 
-  countDays = () => {
-    const diffDay = this.state.endDate.diff(this.state.startDate, "days");
-    return diffDay + 1;
-  };
-
   componentDidMount() {
     const url = `${baseUrl}/trips/` + this.props.tripId;
     axios
       .get(url, { withCredentials: true })
       .then(res => {
         const trip = res.data;
-        console.log(trip);
-        localStorage.setItem(`${this.props.tripId}`, JSON.stringify(trip));
+        trip.itinerary.map(t => {
+          const s = new Date(t.date);
+          t.date = moment(s).format("D MMMM YYYY");
+        });
 
         const display = trip.itinerary.reduce((acc, cur) => {
           if (Array.isArray(acc[cur.date])) {
@@ -53,6 +44,7 @@ class ExistingTrip extends React.Component {
         }, {});
 
         this.setState({ tripDisplay: display, tripData: trip });
+        console.log(this.state.tripData);
       })
       .catch(err => {
         console.log(err);
@@ -61,26 +53,35 @@ class ExistingTrip extends React.Component {
 
   saveTrip = () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
-    console.log(this.props.tripId);
 
-    const itineraries = [];
+    const itineraries = this.state.tripData.itinerary;
+
     const dates = Object.keys(trip);
     dates.forEach(date => {
-      trip[date].forEach(travelDetail => {
-        itineraries.push(travelDetail);
+      const travelDetail = trip[date];
+      travelDetail.forEach(item => {
+        itineraries.push(item);
       });
+    });
+
+    itineraries.map(travelDetail => {
+      const d = new Date(travelDetail.date);
+      return moment(d).format();
     });
 
     const url = `${baseUrl}/trips/${this.props.tripId}`;
     axios.patch(url, { itinerary: itineraries }, { withCredentials: true });
 
-    localStorage.removeItem("trip");
+    // localStorage.removeItem("trip");
+
+    // window.location = "/selecttrip";
   };
 
   printDatesList = () => {
-    const dataStartDate = formatDateFromAPI(this.state.tripData.startDate);
-    const dataEndDate = formatDateFromAPI(this.state.tripData.endDate);
-    const dateRange = moment.range(dataStartDate, dataEndDate);
+    const dateRange = moment.range(
+      this.state.tripData.startDate,
+      this.state.tripData.endDate
+    );
 
     const listDates = Array.from(dateRange.by("days"));
 
@@ -89,18 +90,19 @@ class ExistingTrip extends React.Component {
         {listDates.map(day => {
           return (
             <div key={day} className={"print_date"}>
-              {console.log("date: ", day.toISOString())}
               <div className={"dates"}>
                 <p className={"display_dates"}>{formatDate(day)}</p>
                 <p className={"display_dates"}>{formatDay(day)}</p>
               </div>
               <AddLocationForEachDay
-                date={day.toISOString()}
+                dateToSave={formatDate(day)}
+                dateToDisplay={formatDate(day)}
                 itineraryPerDay={
-                  this.state.tripDisplay[day.toISOString()]
-                    ? this.state.tripDisplay[day.toISOString()]
+                  this.state.tripDisplay[formatDate(day)]
+                    ? this.state.tripDisplay[formatDate(day)]
                     : []
                 }
+                tripId={this.props.tripId}
               />
             </div>
           );
@@ -111,6 +113,9 @@ class ExistingTrip extends React.Component {
 
   generateItinerary = () => {
     const travelDates = this.printDatesList();
+
+    localStorage.removeItem("trip");
+
     this.setState(() => {
       return {
         travelDates

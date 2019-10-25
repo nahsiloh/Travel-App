@@ -3,7 +3,7 @@ import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
 
 export const formatDate = date => {
-  return date.format("Do MMMM YYYY");
+  return date.format("D MMMM YYYY");
 };
 
 export const formatDay = date => {
