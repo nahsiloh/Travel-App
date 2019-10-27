@@ -54,13 +54,15 @@ class ExistingTrip extends React.Component {
   saveTrip = () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
 
-    const itineraries = this.state.tripData.itinerary;
+    const itineraries = [];
 
     const dates = Object.keys(trip);
     dates.forEach(date => {
       const travelDetail = trip[date];
       travelDetail.forEach(item => {
-        itineraries.push(item);
+        if (item._id === undefined) {
+          itineraries.push(item);
+        }
       });
     });
 
@@ -70,7 +72,11 @@ class ExistingTrip extends React.Component {
     });
 
     const url = `${baseUrl}/trips/${this.props.tripId}`;
-    axios.patch(url, { itinerary: itineraries }, { withCredentials: true });
+    axios.patch(
+      url,
+      { itinerary: this.state.tripData.itinerary.concat(itineraries) },
+      { withCredentials: true }
+    );
 
     // localStorage.removeItem("trip");
 
