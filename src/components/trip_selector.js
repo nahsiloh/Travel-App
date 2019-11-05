@@ -1,9 +1,7 @@
 import React from "react";
-import axios from "axios";
 import DatePicker from "./date_picker";
 import ExistingTrip from "./existing_trip";
-
-const baseUrl = "http://localhost:5000";
+import { fetchTrips } from "../api/api";
 
 class TripSelector extends React.Component {
   constructor(props) {
@@ -14,17 +12,14 @@ class TripSelector extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const url = `${baseUrl}/trips`;
-    axios
-      .get(url)
-      .then(res => {
-        this.setState({ tripsData: res.data });
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }
+  componentDidMount = async () => {
+    try {
+      const response = await fetchTrips();
+      this.setState({ tripsData: response });
+    } catch (err) {
+      return err.message;
+    }
+  };
 
   handleTripSelector = event => {
     this.setState({ tripName: event.target.value });
@@ -32,7 +27,7 @@ class TripSelector extends React.Component {
 
   selectTrip = () => {
     if (this.state.tripName.length === 0) {
-      // return <DatePicker />;
+      return <DatePicker />;
     } else {
       return <ExistingTrip tripId={this.state.tripName} />;
     }

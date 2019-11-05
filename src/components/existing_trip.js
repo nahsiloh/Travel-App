@@ -4,14 +4,13 @@ import uuidv1 from "uuid/v1";
 
 import "../static/date_picker.css";
 
-import { formatDate, formatDay, formatDateFromAPI } from "./format_dates";
+import { formatDate, formatDay } from "./format_dates";
 import AddLocationForEachDay from "./add_location_for_each_day";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import { fetchTripById, editTrip } from "../api/api";
 const moment = extendMoment(Moment);
-
-const baseUrl = "http://localhost:5000";
 
 class ExistingTrip extends React.Component {
   constructor(props) {
@@ -23,43 +22,42 @@ class ExistingTrip extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const url = `${baseUrl}/trips/` + this.props.tripId;
-    axios
-      .get(url, { withCredentials: true })
-      .then(res => {
-        const trip = res.data;
-        trip.itinerary.map(t => {
-          const s = new Date(t.date);
-          t.date = moment(s).format("D MMMM YYYY");
-        });
-
-        const display = trip.itinerary.reduce((acc, cur) => {
-          if (Array.isArray(acc[cur.date])) {
-            acc[cur.date].push(cur);
-          } else {
-            acc[cur.date] = [cur];
-          }
-          return acc;
-        }, {});
-
-        this.setState({ tripDisplay: display, tripData: trip });
-        console.log(this.state.tripData);
-      })
-      .catch(err => {
-        console.log(err);
+  componentDidMount = async () => {
+    try {
+      const trip = await fetchTripById(this.props.tripId);
+      trip.itinerary.map(t => {
+        const s = new Date(t.date);
+        t.date = moment(s).format("D MMMM YYYY");
       });
-  }
 
-  saveTrip = () => {
+      const display = trip.itinerary.reduce((acc, cur) => {
+        if (Array.isArray(acc[cur.date])) {
+          acc[cur.date].push(cur);
+        } else {
+          acc[cur.date] = [cur];
+        }
+        return acc;
+      }, {});
+
+      this.setState({ tripDisplay: display, tripData: trip });
+      console.log(this.state.tripData);
+    } catch (err) {
+      return err.message;
+    }
+  };
+
+  updateTrip = async () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
-
     const itineraries = [];
 
     const dates = Object.keys(trip);
+
+    //to add new item
     dates.forEach(date => {
       const travelDetail = trip[date];
+      // console.log(travelDetail);
       travelDetail.forEach(item => {
+        //for adding a new item
         if (item._id === undefined) {
           itineraries.push(item);
         }
@@ -71,16 +69,11 @@ class ExistingTrip extends React.Component {
       return moment(d).format();
     });
 
-    const url = `${baseUrl}/trips/${this.props.tripId}`;
-    axios.patch(
-      url,
-      { itinerary: this.state.tripData.itinerary.concat(itineraries) },
-      { withCredentials: true }
-    );
+    const editedTrip = this.state.tripData.itinerary.concat(itineraries);
+    await editTrip(this.props.tripId, editedTrip);
 
-    // localStorage.removeItem("trip");
-
-    // window.location = "/selecttrip";
+    localStorage.removeItem("trip");
+    window.location = "/selecttrip";
   };
 
   printDatesList = () => {
@@ -139,7 +132,7 @@ class ExistingTrip extends React.Component {
         >
           <i className="far fa-paper-plane"></i>
         </button>
-        <button onClick={this.saveTrip}>Save Trip</button>
+        <button onClick={this.updateTrip}>Save Trip</button>
 
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>

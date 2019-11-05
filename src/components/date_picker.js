@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import uuidv1 from "uuid/v1";
 
+import { createNewTrip } from "../api/api";
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
@@ -16,8 +17,6 @@ import SelectCountry from "./select_country";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
-
-const baseUrl = "http://localhost:5000";
 
 class DatePicker extends React.Component {
   constructor(props) {
@@ -40,29 +39,35 @@ class DatePicker extends React.Component {
     return diffDay + 1;
   };
 
-  saveNewTrip = () => {
+  saveNewTrip = async () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
-
     const itineraries = [];
+
     const dates = Object.keys(trip);
     dates.forEach(date => {
-      trip[date].forEach(travelDetail => {
-        itineraries.push(travelDetail);
+      const travelDetail = trip[date];
+      travelDetail.forEach(item => {
+        itineraries.push(item);
       });
     });
 
+    itineraries.map(travelDetail => {
+      const d = new Date(travelDetail.date);
+      return moment(d).format();
+    });
+
+    console.log(this.state.startDate);
+
     const newTrip = {
-      name: `${this.state.name}`,
-      startDate: `${this.state.startDate}`,
-      endDate: `${this.state.endDate}`,
+      name: this.state.name,
+      startDate: moment(this.state.startDate).format(),
+      endDate: moment(this.state.endDate).format(),
       itinerary: itineraries
     };
 
-    const url = `${baseUrl}/trips/new`;
-    axios.post(url, newTrip, { withCredentials: true });
+    await createNewTrip(newTrip);
 
     localStorage.removeItem("trip");
-
     window.location = "/selecttrip";
   };
 
