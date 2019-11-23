@@ -15,7 +15,7 @@ export const createNewTrip = async newTrip => {
 };
 
 export const editTrip = async (tripId, editedTrip) => {
-  await axios.patch(
+  await axios.put(
     `/trips/${tripId}`,
     { itinerary: editedTrip },
     { withCredentials: true }
