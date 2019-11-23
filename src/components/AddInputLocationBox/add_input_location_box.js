@@ -1,5 +1,5 @@
 import React from "react";
-import "../static/add_input_location_box.css";
+import "./add_input_location_box.css";
 
 class AddInputLocationBox extends React.Component {
   constructor(props) {

@@ -1,8 +1,8 @@
 import React from "react";
 
-import AddInputLocationBox from "./add_input_location_box";
+import AddInputLocationBox from "../AddInputLocationBox/add_input_location_box";
 import uuidv1 from "uuid/v1";
-import "../static/add_location_for_each_day.css";
+import "./add_location_for_each_day.css";
 
 class AddLocationForEachDay extends React.Component {
   constructor(props) {
@@ -55,6 +55,7 @@ class AddLocationForEachDay extends React.Component {
 
   render() {
     console.log(this.state.itineraryPerDay);
+    console.log(this.props.dateToSave);
     return (
       <div>
         <div className={"each_date"}>

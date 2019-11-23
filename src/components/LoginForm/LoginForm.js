@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { loginUser } from "../api/api";
+import { loginUser } from "../../api/api";
 
 class Login extends React.Component {
   constructor(props) {

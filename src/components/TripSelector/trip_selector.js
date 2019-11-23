@@ -1,7 +1,7 @@
 import React from "react";
-import DatePicker from "./date_picker";
-import ExistingTrip from "./existing_trip";
-import { fetchTrips } from "../api/api";
+import DatePicker from "../DatePicker/date_picker";
+import ExistingTrip from "../ExistingTrip/existing_trip";
+import { fetchTrips } from "../../api/api";
 
 class TripSelector extends React.Component {
   constructor(props) {

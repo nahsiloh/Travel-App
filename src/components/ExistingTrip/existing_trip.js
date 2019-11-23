@@ -2,14 +2,14 @@ import React from "react";
 import axios from "axios";
 import uuidv1 from "uuid/v1";
 
-import "../static/date_picker.css";
+import "../DatePicker/date_picker.css";
 
-import { formatDate, formatDay } from "./format_dates";
-import AddLocationForEachDay from "./add_location_for_each_day";
+import { formatDate, formatDay } from "../FormatDates/format_dates";
+import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
-import { fetchTripById, editTrip } from "../api/api";
+import { fetchTripById, editTrip } from "../../api/api";
 const moment = extendMoment(Moment);
 
 class ExistingTrip extends React.Component {
@@ -46,7 +46,7 @@ class ExistingTrip extends React.Component {
     }
   };
 
-  updateTrip = async () => {
+  updateExistingTrip = async () => {
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
     const itineraries = [];
 
@@ -73,7 +73,8 @@ class ExistingTrip extends React.Component {
     await editTrip(this.props.tripId, editedTrip);
 
     localStorage.removeItem("trip");
-    window.location = "/selecttrip";
+
+    // window.location.reload();
   };
 
   printDatesList = () => {
@@ -132,7 +133,7 @@ class ExistingTrip extends React.Component {
         >
           <i className="far fa-paper-plane"></i>
         </button>
-        <button onClick={this.updateTrip}>Save Trip</button>
+        <button onClick={this.updateExistingTrip}>Save Trip</button>
 
         <div className={"travel_dates"}>{this.state.travelDates}</div>
       </div>

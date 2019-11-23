@@ -1,21 +1,19 @@
 import React from "react";
-import axios from "axios";
 import uuidv1 from "uuid/v1";
 
-import { createNewTrip } from "../api/api";
+import { createNewTrip } from "../../api/api";
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
 
-import "../static/date_picker.css";
+import "./date_picker.css";
 
-import { formatDate, formatDay } from "./format_dates";
-import AddLocationForEachDay from "./add_location_for_each_day";
-import AddInputLocationBox from "./add_input_location_box";
-import SelectCountry from "./select_country";
+import { formatDate, formatDay } from "../FormatDates/format_dates";
+import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import TripSelector from "../TripSelector/trip_selector";
 const moment = extendMoment(Moment);
 
 class DatePicker extends React.Component {
@@ -56,8 +54,6 @@ class DatePicker extends React.Component {
       return moment(d).format();
     });
 
-    console.log(this.state.startDate);
-
     const newTrip = {
       name: this.state.name,
       startDate: moment(this.state.startDate).format(),
@@ -66,9 +62,15 @@ class DatePicker extends React.Component {
     };
 
     await createNewTrip(newTrip);
-
     localStorage.removeItem("trip");
-    window.location = "/selecttrip";
+
+    this.setState({
+      startDate: moment(),
+      endDate: moment().add(7, "days"),
+      travelDates: [],
+      name: "",
+      tripDisplay: {}
+    });
   };
 
   printDatesList = () => {
@@ -80,13 +82,12 @@ class DatePicker extends React.Component {
         {listDates.map(day => {
           return (
             <div key={day} className={"print_date"}>
-              {console.log("date: ", day.toISOString())}
               <div className={"dates"}>
                 <p className={"display_dates"}>{formatDate(day)}</p>
                 <p className={"display_dates"}>{formatDay(day)}</p>
               </div>
               <AddLocationForEachDay
-                date={day.toISOString()}
+                dateToSave={formatDate(day)}
                 itineraryPerDay={
                   this.state.tripDisplay[day.toISOString()]
                     ? this.state.tripDisplay[day.toISOString()]
