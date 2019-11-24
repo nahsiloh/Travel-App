@@ -60,10 +60,7 @@ class App extends React.Component {
       return (
         <Router>
           <div className="App">
-            <NavBar
-              checkIsLoggedIn={this.checkIsLoggedIn}
-              logout={this.logout}
-            />
+            <NavBar isLoggedIn={this.state.isLoggedIn} logout={this.logout} />
             <h1>Lets fly away!</h1>
             <TripSelector />
           </div>

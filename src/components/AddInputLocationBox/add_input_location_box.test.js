@@ -1,147 +1,130 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, wait } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import AddInputLocationBox from "../components/add_input_location_box";
+import AddInputLocationBox from "./add_input_location_box";
 
 describe("Add Location for Each Day", () => {
-  const updateLocation = jest.fn();
-  const deleteItem = jest.fn();
   let travelDetail;
 
   beforeEach(() => {
-    updateLocation.mockRestore();
     travelDetail = {
       id: 1,
-      value: "",
-      category: "accomdation",
-      cost: ""
+      destination: "",
+      program: "accommodation",
+      cost: "",
+      date: ""
     };
   });
 
-  const renderAddInputLocationBox = (details = travelDetail) => {
-    return render(
-      <AddInputLocationBox
-        travelDetail={details}
-        updateLocation={updateLocation}
-        deleteItem={deleteItem}
-      />
-    );
-  };
+  const saveLocation = jest.fn();
+  const deleteItem = jest.fn();
 
-  it("should show input options", () => {
-    const {
-      queryByPlaceholderText,
-      getByText,
-      getByTestId
-    } = renderAddInputLocationBox();
+  saveLocation.mockRestore();
 
-    const getCategory = getByText("Accommodation");
-    const getInputLocation = queryByPlaceholderText("Location");
-    const getCost = queryByPlaceholderText("Cost");
-    const saveItemButton = getByTestId("save_item");
-    const deleteItemButton = getByTestId("delete_item");
-    expect(getInputLocation).toBeInTheDocument();
-    expect(getCost).toBeInTheDocument();
-    expect(getCategory).toBeInTheDocument();
-    expect(saveItemButton).toBeInTheDocument();
-    expect(deleteItemButton).toBeInTheDocument();
-  });
+  describe("Input box", () => {
+    it("should show input options", () => {
+      const { queryByPlaceholderText, getByText, getByTestId } = render(
+        <AddInputLocationBox travelDetail={travelDetail} />
+      );
 
-  it("should be able to input the Cost item", () => {
-    const { getByLabelText, getByDisplayValue } = renderAddInputLocationBox();
-    const getCost = getByLabelText("cost_input_box");
+      const getCategory = getByText("Accommodation");
+      const getInputLocation = queryByPlaceholderText("Location");
+      const getCost = queryByPlaceholderText("Cost");
+      const saveItemButton = getByTestId("save_item");
+      const deleteItemButton = getByTestId("delete_item");
+      expect(getInputLocation).toBeInTheDocument();
+      expect(getCost).toBeInTheDocument();
+      expect(getCategory).toBeInTheDocument();
+      expect(saveItemButton).toBeInTheDocument();
+      expect(deleteItemButton).toBeInTheDocument();
+    });
 
-    fireEvent.change(getCost, { target: { value: "100" } });
-    expect(getByDisplayValue("100")).toBeInTheDocument();
-  });
+    it("should be able to input the Cost item", () => {
+      const { getByLabelText, getByDisplayValue } = render(
+        <AddInputLocationBox travelDetail={travelDetail} />
+      );
+      const getCost = getByLabelText("cost_input_box");
 
-  it("should be able to delete input", () => {
-    const { getByTestId } = renderAddInputLocationBox();
-    const deleteItemButton = getByTestId("delete_item");
-    fireEvent.click(deleteItemButton);
-    expect(deleteItem).toHaveBeenCalledTimes(1);
-  });
+      fireEvent.change(getCost, { target: { value: "100" } });
+      expect(getByDisplayValue("100")).toBeInTheDocument();
+    });
 
-  it("should be able to save 1 location", () => {
-    const {
-      queryByPlaceholderText,
-      getByTestId,
-      getByDisplayValue
-    } = renderAddInputLocationBox();
+    it("should be able to delete input", () => {
+      const { getByTestId } = render(
+        <AddInputLocationBox
+          travelDetail={travelDetail}
+          deleteItem={deleteItem}
+        />
+      );
+      const deleteItemButton = getByTestId("delete_item");
+      fireEvent.click(deleteItemButton);
+      expect(deleteItem).toHaveBeenCalledTimes(1);
+    });
 
-    const getInputLocation = queryByPlaceholderText("Location");
-    const getSaveInputButton = getByTestId("save_item");
-    fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
-    expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
-    fireEvent.click(getSaveInputButton);
-    expect(updateLocation).toBeCalledWith("Disneyland", "accommodation", "");
-    expect(getInputLocation).not.toBeInTheDocument();
+    it("should clear input box after clicking save", async () => {
+      const { queryByPlaceholderText, getByTestId, getByDisplayValue } = render(
+        <AddInputLocationBox
+          travelDetail={travelDetail}
+          deleteItem={deleteItem}
+          saveLocation={saveLocation}
+        />
+      );
+
+      const getInputLocation = queryByPlaceholderText("Location");
+      const getSaveInputButton = getByTestId("save_item");
+      const getInputBox = getByTestId("input_box");
+
+      fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
+      expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
+      fireEvent.click(getSaveInputButton);
+      expect(saveLocation).toBeCalledWith("Disneyland", "accommodation", 0);
+
+      expect(getInputBox).not.toBeInTheDocument;
+    });
   });
 
   describe("after saving", () => {
-    it("should be able to see the edit button and edit item", () => {
-      const {
-        queryByPlaceholderText,
-        getByTestId,
-        getByDisplayValue
-      } = renderAddInputLocationBox();
+    it("should be able to see the saved input, edit button and delete button", async () => {
+      const travelDetail = {
+        id: 1,
+        destination: "Disneyland",
+        program: "accommodation",
+        cost: "",
+        date: ""
+      };
 
-      const getInputLocation = queryByPlaceholderText("Location");
-      const getSaveInputButton = getByTestId("save_item");
+      const { getByTestId } = render(
+        <AddInputLocationBox
+          travelDetail={travelDetail}
+          saveLocation={saveLocation}
+        />
+      );
 
-      fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
-      expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
-      fireEvent.click(getSaveInputButton);
-      expect(updateLocation).toBeCalledWith("Disneyland", "accommodation", "");
-
+      const getSavedInput = getByTestId("saved_input");
       const getEditButton = getByTestId("edit_item");
-      expect(getEditButton).toBeInTheDocument();
-      fireEvent.click(getEditButton);
-      expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
-    });
-
-    it("should be able to see inputs for accommodation, location and cost but able to see the delete button", () => {
-      const {
-        getByTestId,
-        queryByPlaceholderText,
-        getByDisplayValue,
-        getByText
-      } = renderAddInputLocationBox();
-      const getInputLocation = queryByPlaceholderText("Location");
-      const getSaveInputButton = getByTestId("save_item");
-      const getCategory = getByText("Accommodation");
-      const getCost = queryByPlaceholderText("Cost");
-
-      fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
-      expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
-      fireEvent.click(getSaveInputButton);
-      expect(updateLocation).toBeCalledWith("Disneyland", "accommodation", "");
-
       const getDeleteButton = getByTestId("delete_item");
-      expect(getDeleteButton).toBeInTheDocument();
-      expect(getInputLocation).not.toBeInTheDocument();
-      expect(getCost).not.toBeInTheDocument();
-      expect(getCategory).not.toBeInTheDocument();
+      expect(getSavedInput).toBeInTheDocument;
+      expect(getEditButton).toBeInTheDocument;
+      expect(getDeleteButton).toBeInTheDocument;
     });
   });
 
-  // it("should not on save display cost of $0 ", () => {
-  //   const {
-  //     getByLabelText,
-  //     getByTestId,
-  //     getByText
-  //   } = renderAddInputLocationBox();
-  //   // const getCost = getByLabelText("cost_input_box");
-  //   const getSaveInputButton = getByTestId("save_item");
-  //   const getInputLocation = getByLabelText("location_input_box");
+  it("should display the cost of the trip", () => {
+    const travelDetail = {
+      id: 1,
+      destination: "Disneyland",
+      program: "accommodation",
+      cost: "$100",
+      date: ""
+    };
 
-  //   fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
-  //   // expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
+    const { getByTestId } = render(
+      <AddInputLocationBox
+        travelDetail={travelDetail}
+        saveLocation={saveLocation}
+      />
+    );
 
-  //   fireEvent.click(getSaveInputButton);
-  //   expect(updateLocation).toBeCalledWith("Disneyland", "accommodation", "");
-
-  //   // const getCostDisplay = getByTestId("cost_display");
-  //   expect(getByText("$0")).not.toBeInTheDocument();
-  // });
+    expect("$100").toBeInTheDocument;
+  });
 });

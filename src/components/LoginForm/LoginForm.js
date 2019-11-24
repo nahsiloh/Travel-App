@@ -33,7 +33,7 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div data-testid="loginForm">
         <input
           name="username"
           type="string"

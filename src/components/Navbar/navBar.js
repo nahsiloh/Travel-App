@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 function NavBar(props) {
   return (
-    <header>
+    <header data-testid="Navbar">
       <Link to="/" onClick={props.logout}>
         Logout
       </Link>

@@ -52,7 +52,7 @@ class AddInputLocationBox extends React.Component {
 
   createInputBox = () => {
     return (
-      <div className={"input_box_container"}>
+      <div className={"input_box_container"} data-testid="input_box">
         <select value={this.state.program} onChange={this.handleProgramChange}>
           <option value="accommodation">Accommodation</option>
           <option value="attractions">Attractions</option>
@@ -112,7 +112,7 @@ class AddInputLocationBox extends React.Component {
     return !this.props.travelDetail.destination ? (
       <this.createInputBox />
     ) : (
-      <div>
+      <div data-testid="saved_input">
         <p>{this.props.travelDetail.program}</p>
         <p>{this.props.travelDetail.destination}</p>
         {this.printCostIfMoreThanZero()}

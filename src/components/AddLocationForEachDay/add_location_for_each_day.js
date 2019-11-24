@@ -54,8 +54,8 @@ class AddLocationForEachDay extends React.Component {
   };
 
   render() {
-    console.log(this.state.itineraryPerDay);
-    console.log(this.props.dateToSave);
+    // console.log(this.state.itineraryPerDay);
+    // console.log(this.props.dateToSave);
     return (
       <div>
         <div className={"each_date"}>

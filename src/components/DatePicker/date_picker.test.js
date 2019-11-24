@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import DatePicker from "../date_picker";
+import DatePicker from "./date_picker";
 
 describe("Date Picker", () => {
   it("should be able to generate number of days", () => {
