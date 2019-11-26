@@ -37,7 +37,11 @@ class TripSelector extends React.Component {
     return (
       <div>
         <p>Select Your Trip</p>
-        <select value={this.state.tripName} onChange={this.handleTripSelector}>
+        <select
+          value={this.state.tripName}
+          onChange={this.handleTripSelector}
+          data-testid="trip_selector"
+        >
           <option>Create a new Itinerary</option>
           {this.state.tripsData.map(trip => {
             return <option value={trip._id}>{trip.name}</option>;
