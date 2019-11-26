@@ -42,19 +42,20 @@ class AddLocationForEachDay extends React.Component {
   };
 
   deleteLocation = travelDetail => {
+    const updatedTripAfterDelete = this.state.itineraryPerDay.filter(
+      item => item !== travelDetail
+    );
     this.setState({
-      itineraryPerDay: [
-        ...this.state.itineraryPerDay.filter(item => item !== travelDetail)
-      ]
+      itineraryPerDay: [...updatedTripAfterDelete]
     });
 
     const trip = JSON.parse(localStorage.getItem("trip")) || {};
-    trip[this.props.dateToDisplay] = this.state.itineraryPerDay;
+    trip[this.props.dateToDisplay] = updatedTripAfterDelete;
     localStorage.setItem("trip", JSON.stringify(trip));
   };
 
   render() {
-    // console.log(this.state.itineraryPerDay);
+    console.log(this.state.itineraryPerDay);
     // console.log(this.props.dateToSave);
     return (
       <div>

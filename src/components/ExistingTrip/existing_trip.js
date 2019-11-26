@@ -25,6 +25,8 @@ class ExistingTrip extends React.Component {
   componentDidMount = async () => {
     try {
       const trip = await fetchTripById(this.props.tripId);
+      console.log(trip);
+
       trip.itinerary.map(t => {
         const s = new Date(t.date);
         t.date = moment(s).format("D MMMM YYYY");
@@ -40,7 +42,8 @@ class ExistingTrip extends React.Component {
       }, {});
 
       this.setState({ tripDisplay: display, tripData: trip });
-      console.log(this.state.tripData);
+      console.log(this.state.tripDisplay);
+      localStorage.setItem("trip", JSON.stringify(this.state.tripDisplay));
     } catch (err) {
       return err.message;
     }
@@ -52,15 +55,10 @@ class ExistingTrip extends React.Component {
 
     const dates = Object.keys(trip);
 
-    //to add new item
     dates.forEach(date => {
       const travelDetail = trip[date];
-      // console.log(travelDetail);
       travelDetail.forEach(item => {
-        //for adding a new item
-        if (item._id === undefined) {
-          itineraries.push(item);
-        }
+        itineraries.push(item);
       });
     });
 
@@ -69,8 +67,7 @@ class ExistingTrip extends React.Component {
       return moment(d).format();
     });
 
-    const editedTrip = this.state.tripData.itinerary.concat(itineraries);
-    await editTrip(this.props.tripId, editedTrip);
+    await editTrip(this.props.tripId, itineraries);
 
     localStorage.removeItem("trip");
 
@@ -113,8 +110,6 @@ class ExistingTrip extends React.Component {
 
   generateItinerary = () => {
     const travelDates = this.printDatesList();
-
-    localStorage.removeItem("trip");
 
     this.setState(() => {
       return {
