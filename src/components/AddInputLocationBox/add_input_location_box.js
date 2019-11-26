@@ -33,12 +33,6 @@ class AddInputLocationBox extends React.Component {
       return;
     }
 
-    const itinerary = {
-      destination: this.state.destination,
-      program: this.state.program,
-      cost: this.state.cost
-    };
-
     this.setState({
       shouldShowInputBox: false
     });
@@ -84,10 +78,6 @@ class AddInputLocationBox extends React.Component {
     );
   };
 
-  editItem = () => {
-    this.setState({ shouldShowInputBox: true });
-  };
-
   editAndDeleteButtons = () => {
     return (
       <div>
@@ -108,10 +98,8 @@ class AddInputLocationBox extends React.Component {
     return <p>{`$${this.props.travelDetail.cost}`}</p>;
   };
 
-  checkForNewTravelDetail = () => {
-    return !this.props.travelDetail.destination ? (
-      <this.createInputBox />
-    ) : (
+  displayExistingTravelDetail = () => {
+    return (
       <div data-testid="saved_input">
         <p>{this.props.travelDetail.program}</p>
         <p>{this.props.travelDetail.destination}</p>
@@ -121,10 +109,28 @@ class AddInputLocationBox extends React.Component {
     );
   };
 
+  displayTravelDetailOrInputBox = () => {
+    if (this.props.travelDetail.destination) {
+      return this.displayExistingTravelDetail();
+    } else {
+      return this.createInputBox();
+    }
+  };
+
+  displayInputBoxWhenEditing = () => {
+    if (this.shouldShowInputBox) {
+      return this.createInputBox();
+    }
+  };
+
+  editItem = () => {
+    this.setState({ shouldShowInputBox: true });
+  };
+
   render() {
     return (
       <div className={"input_display_container"}>
-        <this.checkForNewTravelDetail />
+        <this.displayTravelDetailOrInputBox />
       </div>
     );
   }
