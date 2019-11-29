@@ -3,7 +3,7 @@ import { render, fireEvent, wait } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import AddInputLocationBox from "./add_input_location_box";
 
-describe("Add Location for Each Day", () => {
+describe("Add Input Box for Each Day", () => {
   let travelDetail;
 
   beforeEach(() => {
@@ -77,7 +77,7 @@ describe("Add Location for Each Day", () => {
       fireEvent.change(getInputLocation, { target: { value: "Disneyland" } });
       expect(getByDisplayValue("Disneyland")).toBeInTheDocument();
       fireEvent.click(getSaveInputButton);
-      expect(saveLocation).toBeCalledWith("Disneyland", "accommodation", 0);
+      expect(saveLocation).toBeCalledWith("Disneyland", "accommodation", "");
 
       expect(getInputBox).not.toBeInTheDocument;
     });

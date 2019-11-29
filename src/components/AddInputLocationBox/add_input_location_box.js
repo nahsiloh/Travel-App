@@ -5,10 +5,11 @@ class AddInputLocationBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      shouldShowInputBox: true,
+      // shouldDisplayItinerary: true,
+      shouldShowInputBoxForEdit: false,
       destination: "",
       program: "accommodation",
-      cost: 0
+      cost: ""
     };
   }
 
@@ -33,9 +34,7 @@ class AddInputLocationBox extends React.Component {
       return;
     }
 
-    this.setState({
-      shouldShowInputBox: false
-    });
+    this.setState({ shouldShowInputBoxForEdit: false });
 
     this.props.saveLocation(
       this.state.destination,
@@ -113,21 +112,26 @@ class AddInputLocationBox extends React.Component {
   };
 
   displayTravelDetailOrInputBox = () => {
-    if (this.props.travelDetail.destination) {
+    if (
+      this.props.travelDetail.destination.length > 0 &&
+      !this.state.shouldShowInputBoxForEdit
+    ) {
       return this.displayExistingTravelDetail();
-    } else {
-      return this.createInputBox();
-    }
-  };
-
-  displayInputBoxWhenEditing = () => {
-    if (this.shouldShowInputBox) {
+    } else if (
+      this.props.travelDetail.destination.length === 0 ||
+      this.state.shouldShowInputBoxForEdit
+    ) {
       return this.createInputBox();
     }
   };
 
   editItem = () => {
-    this.setState({ shouldShowInputBox: true });
+    this.setState({
+      destination: this.props.travelDetail.destination,
+      program: this.props.travelDetail.program,
+      cost: this.props.travelDetail.cost,
+      shouldShowInputBoxForEdit: true
+    });
   };
 
   render() {
