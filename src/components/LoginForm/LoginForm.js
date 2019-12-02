@@ -1,6 +1,5 @@
 import React from "react";
-import axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { loginUser } from "../../api/api";
 
 class Login extends React.Component {
@@ -20,20 +19,26 @@ class Login extends React.Component {
     });
   };
 
-  loginHandler = async () => {
+  loginSubmit = async () => {
     try {
       const { username, password } = this.state;
       await loginUser(username, password);
       this.props.checkIsLoggedIn(true);
+      this.props.history.push("/tripSelect");
       this.setState({ message: "You are logged in" });
     } catch (err) {
       this.setState({ message: "Invalid username or password" });
     }
   };
 
+  createNewAccount = () => {
+    this.props.history.push("/createUser");
+  };
+
   render() {
     return (
       <div data-testid="loginForm">
+        <h2>Login</h2>
         <input
           name="username"
           type="string"
@@ -50,11 +55,12 @@ class Login extends React.Component {
           placeholder="Password"
           required
         />
-        <button onClick={this.loginHandler}>Login!</button>
+        <button onClick={this.loginSubmit}>Login!</button>
+        <button onClick={this.createNewAccount}>Create new Accout!</button>
         <p>{this.state.message}</p>
       </div>
     );
   }
 }
 
-export default Login;
+export default withRouter(Login);

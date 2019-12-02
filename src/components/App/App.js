@@ -1,10 +1,12 @@
 import React from "react";
 import "./App.css";
+
 import TripSelector from "../TripSelector/trip_selector";
 import Login from "../LoginForm/LoginForm";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import CreateUser from "../CreateUser/createUser.js";
 import NavBar from "../Navbar/navBar";
-import ExistingTrip from "../ExistingTrip/existing_trip";
+
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { logoutUser } from "../../api/api";
 
 class App extends React.Component {
@@ -40,31 +42,58 @@ class App extends React.Component {
   render() {
     if (!this.state.isLoggedIn) {
       return (
-        <Router>
-          <div className="App">
-            <h1>Lets fly away!</h1>
-
-            <Switch>
-              <Route
-                exact
-                path="/"
-                component={() => (
-                  <Login checkIsLoggedIn={this.checkIsLoggedIn} />
-                )}
-              />
-            </Switch>
-          </div>
-        </Router>
+        <section>
+          <Router>
+            <div className="App">
+              <h1>Lets fly away!</h1>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  component={() => (
+                    <div>
+                      <Login
+                        checkIsLoggedIn={this.checkIsLoggedIn}
+                        {...this.props}
+                      />
+                    </div>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/createUser"
+                  component={() => (
+                    <div>
+                      <CreateUser {...this.props} />
+                    </div>
+                  )}
+                />
+              </Switch>
+            </div>
+          </Router>
+        </section>
       );
     } else {
       return (
-        <Router>
-          <div className="App">
-            <NavBar isLoggedIn={this.state.isLoggedIn} logout={this.logout} />
-            <h1>Lets fly away!</h1>
-            <TripSelector />
-          </div>
-        </Router>
+        <section>
+          <Router>
+            <Switch>
+              <Route
+                exact
+                path="/tripSelect"
+                render={() => (
+                  <div className="App">
+                    <NavBar
+                      isLoggedIn={this.state.isLoggedIn}
+                      logout={this.logout}
+                    />
+                    <TripSelector />
+                  </div>
+                )}
+              />
+            </Switch>
+          </Router>
+        </section>
       );
     }
   }
