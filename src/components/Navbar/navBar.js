@@ -7,6 +7,7 @@ function NavBar(props) {
       <Link to="/" onClick={props.logout}>
         Logout
       </Link>
+      <h1>Lets fly away!</h1>
     </header>
   );
 }
