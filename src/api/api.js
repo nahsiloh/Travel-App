@@ -33,3 +33,7 @@ export const loginUser = async (username, password) => {
 export const logoutUser = async () => {
   await axios.post("/users/logout", {}, { withCredentials: true });
 };
+
+export const createUser = async newUser => {
+  await axios.post("/users/new", newUser, { withCredentials: true });
+};
