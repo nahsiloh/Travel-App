@@ -1,7 +1,7 @@
 import React from "react";
-import axios from "axios";
 import { withRouter } from "react-router-dom";
 import { createUser } from "../../api/api";
+import "./CreateUser.css";
 
 class CreateUser extends React.Component {
   constructor(props) {
@@ -39,33 +39,43 @@ class CreateUser extends React.Component {
   render() {
     return (
       <div>
-        <h2>Create an account!</h2>
-        <input
-          name="email"
-          type="string"
-          onChange={this.handleCreateUserChange}
-          value={this.state.email}
-          placeholder="Email"
-          required
-        />
-        <input
-          name="username"
-          type="string"
-          onChange={this.handleCreateUserChange}
-          value={this.state.username}
-          placeholder="Username"
-          required
-        />
-        <input
-          name="password"
-          type="string"
-          onChange={this.handleCreateUserChange}
-          value={this.state.password}
-          placeholder="Password"
-          required
-        />
-        <button onClick={this.submitCreateUser}>Create!</button>
-        <p>{this.state.message}</p>
+        <h2 className="createUser__heading">Create an account!</h2>
+        <section className="createUser__form">
+          <h3>EMAIL</h3>
+          <input
+            name="email"
+            type="string"
+            onChange={this.handleCreateUserChange}
+            value={this.state.email}
+            placeholder="Email"
+            required
+          />
+          <h3>USERNAME</h3>
+          <input
+            name="username"
+            type="string"
+            onChange={this.handleCreateUserChange}
+            value={this.state.username}
+            placeholder="Username"
+            required
+          />
+          <h3>PASSWORD</h3>
+          <input
+            name="password"
+            type="string"
+            onChange={this.handleCreateUserChange}
+            value={this.state.password}
+            placeholder="Password"
+            required
+          />
+          <button
+            onClick={this.submitCreateUser}
+            data-testid={"createUserButton"}
+          >
+            Create!
+          </button>
+          <p>{this.state.message}</p>
+        </section>
       </div>
     );
   }
