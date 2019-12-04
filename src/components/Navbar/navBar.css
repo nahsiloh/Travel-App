@@ -1,0 +1,12 @@
+header {
+  background-color: cadetblue;
+  height: 3rem;
+  text-align: right;
+}
+
+a {
+  font-size: 2rem;
+  color: white;
+  text-decoration: none;
+  padding-right: 3rem;
+}
