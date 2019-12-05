@@ -1,0 +1,41 @@
+.tripSelector__heading {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  background-color: cadetblue;
+  margin-left: auto;
+  margin-right: auto;
+  width: 18rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+input,
+select {
+  width: 16rem;
+  height: 2.4rem;
+}
+
+h3 {
+  text-align: left;
+  padding-left: 16px;
+  padding-top: 2rem;
+}
+
+h2 {
+  color: white;
+}
+
+button {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tripSelector__form {
+  margin-left: auto;
+  margin-right: auto;
+  width: 18rem;
+  height: 22rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  background-color: #f4efe9;
+}
