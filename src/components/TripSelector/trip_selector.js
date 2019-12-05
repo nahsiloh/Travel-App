@@ -2,6 +2,8 @@ import React from "react";
 import DatePicker from "../DatePicker/date_picker";
 import ExistingTrip from "../ExistingTrip/existing_trip";
 import { fetchTrips } from "../../api/api";
+import { withRouter } from "react-router-dom";
+import "./trip_selector.css";
 
 class TripSelector extends React.Component {
   constructor(props) {
@@ -27,30 +29,38 @@ class TripSelector extends React.Component {
 
   selectTrip = () => {
     if (this.state.tripName.length === 0) {
-      return <DatePicker />;
+      this.props.history.push("/tripSelect/new");
     } else {
-      return <ExistingTrip tripId={this.state.tripName} />;
+      this.props.checkTripName(this.state.tripName);
+      this.props.history.push("/tripSelect/:tripId");
     }
   };
 
   render() {
     return (
       <div>
-        <p>Select Your Trip</p>
-        <select
-          value={this.state.tripName}
-          onChange={this.handleTripSelector}
-          data-testid="trip_selector"
-        >
-          <option>Create a new Itinerary</option>
-          {this.state.tripsData.map(trip => {
-            return <option value={trip._id}>{trip.name}</option>;
-          })}
-        </select>
-        {this.selectTrip()}
+        <h2 className="tripSelector__heading">BOARDING SOON</h2>
+        <section className="tripSelector__form">
+          <h3>SELECT YOUR TRIP</h3>
+          <select
+            value={this.state.tripName}
+            onChange={this.handleTripSelector}
+            data-testid="trip_selector"
+          >
+            <option>Create a new Itinerary</option>
+            {this.state.tripsData.map(trip => {
+              return (
+                <option key={trip._id} value={trip._id}>
+                  {trip.name}
+                </option>
+              );
+            })}
+          </select>
+          <button onClick={this.selectTrip}>Select!</button>
+        </section>
       </div>
     );
   }
 }
 
-export default TripSelector;
+export default withRouter(TripSelector);
