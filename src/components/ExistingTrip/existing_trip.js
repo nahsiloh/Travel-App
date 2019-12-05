@@ -1,11 +1,10 @@
 import React from "react";
-import axios from "axios";
-import uuidv1 from "uuid/v1";
 
 import "../DatePicker/date_picker.css";
 
 import { formatDate, formatDay } from "../FormatDates/format_dates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
+import { withRouter } from "react-router-dom";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
@@ -25,7 +24,6 @@ class ExistingTrip extends React.Component {
   componentDidMount = async () => {
     try {
       const trip = await fetchTripById(this.props.tripId);
-      console.log(trip);
 
       trip.itinerary.map(t => {
         const s = new Date(t.date);
@@ -70,8 +68,7 @@ class ExistingTrip extends React.Component {
     await editTrip(this.props.tripId, itineraries);
 
     localStorage.removeItem("trip");
-
-    // window.location.reload();
+    this.props.history.push("/tripSelect");
   };
 
   printDatesList = () => {
@@ -136,4 +133,4 @@ class ExistingTrip extends React.Component {
   }
 }
 
-export default ExistingTrip;
+export default withRouter(ExistingTrip);

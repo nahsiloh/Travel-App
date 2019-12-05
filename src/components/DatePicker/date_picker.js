@@ -1,19 +1,18 @@
 import React from "react";
-import uuidv1 from "uuid/v1";
 
 import { createNewTrip } from "../../api/api";
 import "react-dates/initialize";
+
 import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
-
 import "./date_picker.css";
 
 import { formatDate, formatDay } from "../FormatDates/format_dates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
+import { withRouter } from "react-router-dom";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
-import TripSelector from "../TripSelector/trip_selector";
 const moment = extendMoment(Moment);
 
 class DatePicker extends React.Component {
@@ -71,6 +70,8 @@ class DatePicker extends React.Component {
       name: "",
       tripDisplay: {}
     });
+
+    this.props.history.push("/tripSelect");
   };
 
   printDatesList = () => {
@@ -153,4 +154,4 @@ class DatePicker extends React.Component {
   }
 }
 
-export default DatePicker;
+export default withRouter(DatePicker);

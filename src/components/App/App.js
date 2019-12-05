@@ -3,17 +3,20 @@ import "./App.css";
 
 import TripSelector from "../TripSelector/trip_selector";
 import Login from "../LoginForm/LoginForm";
-import CreateUser from "../CreateUser/createUser.js";
+import CreateUser from "../CreateUser/CreateUser.js";
 import NavBar from "../Navbar/navBar";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { logoutUser } from "../../api/api";
+import DatePicker from "../DatePicker/date_picker";
+import ExistingTrip from "../ExistingTrip/existing_trip";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
+      tripName: ""
     };
   }
 
@@ -39,6 +42,10 @@ class App extends React.Component {
     localStorage.setItem("isLoggedIn", true);
   };
 
+  checkTripName = tripName => {
+    this.setState({ tripName });
+  };
+
   render() {
     if (!this.state.isLoggedIn) {
       return (
@@ -51,7 +58,7 @@ class App extends React.Component {
                   exact
                   path="/"
                   component={() => (
-                    <div>
+                    <div className="formFormat">
                       <Login
                         checkIsLoggedIn={this.checkIsLoggedIn}
                         {...this.props}
@@ -63,7 +70,7 @@ class App extends React.Component {
                   exact
                   path="/createUser"
                   component={() => (
-                    <div>
+                    <div className="formFormat">
                       <CreateUser {...this.props} />
                     </div>
                   )}
@@ -87,7 +94,36 @@ class App extends React.Component {
                       isLoggedIn={this.state.isLoggedIn}
                       logout={this.logout}
                     />
-                    <TripSelector />
+                    <TripSelector checkTripName={this.checkTripName} />
+                  </div>
+                )}
+              />
+              <Route
+                exact
+                path="/tripSelect/new"
+                render={() => (
+                  <div className="App">
+                    <NavBar
+                      isLoggedIn={this.state.isLoggedIn}
+                      logout={this.logout}
+                    />
+                    <DatePicker {...this.props} />
+                  </div>
+                )}
+              />
+              <Route
+                exact
+                path="/tripSelect/:tripId"
+                render={() => (
+                  <div className="App">
+                    <NavBar
+                      isLoggedIn={this.state.isLoggedIn}
+                      logout={this.logout}
+                    />
+                    <ExistingTrip
+                      tripId={this.state.tripName}
+                      {...this.props}
+                    />
                   </div>
                 )}
               />
