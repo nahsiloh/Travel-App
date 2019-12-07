@@ -10,6 +10,7 @@ class TripSelector extends React.Component {
     super(props);
     this.state = {
       tripsData: [],
+      tripId: "",
       tripName: ""
     };
   }
@@ -24,14 +25,14 @@ class TripSelector extends React.Component {
   };
 
   handleTripSelector = event => {
-    this.setState({ tripName: event.target.value });
+    this.setState({ tripId: event.target.value });
   };
 
   selectTrip = () => {
-    if (this.state.tripName.length === 0) {
+    if (this.state.tripId.length === 0) {
       this.props.history.push("/tripSelect/new");
     } else {
-      this.props.checkTripName(this.state.tripName);
+      this.props.checkTripId(this.state.tripId);
       this.props.history.push("/tripSelect/:tripId");
     }
   };
@@ -43,7 +44,7 @@ class TripSelector extends React.Component {
         <section className="tripSelector__form">
           <h3>SELECT YOUR TRIP</h3>
           <select
-            value={this.state.tripName}
+            value={this.state.tripId}
             onChange={this.handleTripSelector}
             data-testid="trip_selector"
           >

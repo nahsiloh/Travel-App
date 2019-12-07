@@ -16,7 +16,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       isLoggedIn: false,
-      tripName: ""
+      tripId: ""
     };
   }
 
@@ -42,8 +42,8 @@ class App extends React.Component {
     localStorage.setItem("isLoggedIn", true);
   };
 
-  checkTripName = tripName => {
-    this.setState({ tripName });
+  checkTripId = tripId => {
+    this.setState({ tripId });
   };
 
   render() {
@@ -94,7 +94,7 @@ class App extends React.Component {
                       isLoggedIn={this.state.isLoggedIn}
                       logout={this.logout}
                     />
-                    <TripSelector checkTripName={this.checkTripName} />
+                    <TripSelector checkTripId={this.checkTripId} />
                   </div>
                 )}
               />
@@ -120,10 +120,7 @@ class App extends React.Component {
                       isLoggedIn={this.state.isLoggedIn}
                       logout={this.logout}
                     />
-                    <ExistingTrip
-                      tripId={this.state.tripName}
-                      {...this.props}
-                    />
+                    <ExistingTrip tripId={this.state.tripId} {...this.props} />
                   </div>
                 )}
               />
