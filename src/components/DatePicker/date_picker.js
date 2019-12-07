@@ -117,38 +117,43 @@ class DatePicker extends React.Component {
   render() {
     return (
       <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
-        <input
-          type="string"
-          onChange={this.handleNameChange}
-          value={this.state.name}
-          placeholder="Trip Name"
-          defaultValue="Test trip"
-        />
-        <div className={"set_date_container"}>
-          <DateRangePicker
-            startDate={this.state.startDate}
-            startDateId="departure_date"
-            endDate={this.state.endDate}
-            endDateId="return_date"
-            onDatesChange={({ startDate, endDate }) =>
-              this.setState({ startDate, endDate })
-            }
-            focusedInput={this.state.focusedInput}
-            onFocusChange={focusedInput => this.setState({ focusedInput })}
+        <h2 className="createItinerary__heading">Plan a new trip!</h2>
+        <section className="createItinerary__form">
+          <h3>Trip Name</h3>
+          <input
+            type="string"
+            onChange={this.handleNameChange}
+            value={this.state.name}
+            placeholder="Trip Name"
+            defaultValue="Test trip"
           />
-        </div>
-        {/* <p>DESTINATION</p> */}
-        {/* <SelectCountry /> */}
-        <button
-          data-testid={"submitDateButton"}
-          className={"submit_date_button"}
-          onClick={this.generateItinerary}
-        >
-          <i className="far fa-paper-plane"></i>
-        </button>
-        <button onClick={this.saveNewTrip}>Save Trip</button>
+          <h3>Trip Dates</h3>
+          <div className={"set_date_container"}>
+            <DateRangePicker
+              startDate={this.state.startDate}
+              startDateId="departure_date"
+              endDate={this.state.endDate}
+              endDateId="return_date"
+              onDatesChange={({ startDate, endDate }) =>
+                this.setState({ startDate, endDate })
+              }
+              focusedInput={this.state.focusedInput}
+              onFocusChange={focusedInput => this.setState({ focusedInput })}
+            />
+          </div>
+          <button
+            data-testid={"submitDateButton"}
+            className={"submit_date_button"}
+            onClick={this.generateItinerary}
+          >
+            <i className="far fa-paper-plane"></i>
+          </button>
+          <button onClick={this.saveNewTrip}>Save Trip</button>
 
-        <div className={"travel_dates"}>{this.state.travelDates}</div>
+          <div className={"createItinerary__travelDates"}>
+            {this.state.travelDates}
+          </div>
+        </section>
       </div>
     );
   }

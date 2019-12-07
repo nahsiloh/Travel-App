@@ -1,6 +1,6 @@
 import React from "react";
 
-import "../DatePicker/date_picker.css";
+import "./existing_trip.css";
 
 import { formatDate, formatDay } from "../FormatDates/format_dates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
@@ -118,16 +118,24 @@ class ExistingTrip extends React.Component {
   render() {
     return (
       <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
-        <button
-          data-testid={"submitDateButton"}
-          className={"submit_date_button"}
-          onClick={this.generateItinerary}
-        >
-          <i className="far fa-paper-plane"></i>
-        </button>
-        <button onClick={this.updateExistingTrip}>Save Trip</button>
+        <h2 className="existingItinerary__heading">Boarding Soon!</h2>
+        <section className="existingItinerary_form">
+          <h3 className="existingItinerary__title">
+            {this.state.tripData.name}
+          </h3>
+          <button
+            data-testid={"submitDateButton"}
+            className={"submit_date_button"}
+            onClick={this.generateItinerary}
+          >
+            <i className="far fa-paper-plane"></i>
+          </button>
+          <button onClick={this.updateExistingTrip}>Save Trip</button>
 
-        <div className={"travel_dates"}>{this.state.travelDates}</div>
+          <div className="existingItinerary__travelDates">
+            {this.state.travelDates}
+          </div>
+        </section>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-.createUser__heading {
+.existingItinerary__heading {
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   background-color: cadetblue;
@@ -18,10 +18,11 @@ h2 {
   color: white;
 }
 
-h3 {
-  text-align: left;
-  padding-left: 16px;
+.existingItinerary__title {
+  text-align: center;
+  padding-left: 0;
   padding-top: 0.8rem;
+  font-size: 1.6rem;
 }
 
 button {
@@ -29,12 +30,16 @@ button {
   margin-bottom: 1rem;
 }
 
-.createUser__form {
+.existingItinerary_form {
   margin-left: auto;
   margin-right: auto;
   width: 18rem;
-  height: 22rem;
+  height: 8rem;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
   background-color: #f4efe9;
+}
+
+.existingItinerary__travelDates {
+  margin-top: 60px;
 }
