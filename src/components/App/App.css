@@ -16,6 +16,7 @@
 h1,
 h2,
 h3,
+h4,
 button,
 p,
 a {
@@ -35,9 +36,14 @@ h3 {
   font-size: 1.4rem;
 }
 
+h4 {
+  font-size: 1.2rem;
+}
+
 button {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: bold;
+  text-align: center;
 }
 
 p {

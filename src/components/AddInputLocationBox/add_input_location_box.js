@@ -1,11 +1,16 @@
 import React from "react";
 import "./add_input_location_box.css";
 
+const colourProgram = {
+  accommodation: "#e8b665",
+  attraction: "#edcabd",
+  transportation: "#f7b19b",
+  other: "#a6b1b5"
+};
 class AddInputLocationBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // shouldDisplayItinerary: true,
       shouldShowInputBoxForEdit: false,
       destination: "",
       program: "accommodation",
@@ -47,11 +52,12 @@ class AddInputLocationBox extends React.Component {
     return (
       <div className={"input_box_container"} data-testid="input_box">
         <select
+          id="selectProgram"
           value={this.state.program || this.props.travelDetail.program}
           onChange={this.handleProgramChange}
         >
           <option value="accommodation">Accommodation</option>
-          <option value="attractions">Attractions</option>
+          <option value="attraction">Attractions</option>
           <option value="transportation">Transportation</option>
           <option value="other">Other</option>
         </select>
@@ -63,6 +69,7 @@ class AddInputLocationBox extends React.Component {
           placeholder={"Location"}
         />
         <input
+          id="inputCost"
           type="number"
           aria-label="cost_input_box"
           min="0"
@@ -70,10 +77,18 @@ class AddInputLocationBox extends React.Component {
           value={this.state.cost || this.props.travelDetail.cost}
           placeholder={"Cost"}
         />
-        <button data-testid={"save_item"} onClick={this.saveItem}>
+        <button
+          id="saveButton"
+          data-testid={"save_item"}
+          onClick={this.saveItem}
+        >
           <i className="fas fa-check"></i>
         </button>
-        <button data-testid={"delete_item"} onClick={this.props.deleteItem}>
+        <button
+          id="deleteButton"
+          data-testid={"delete_item"}
+          onClick={this.props.deleteItem}
+        >
           <i className="far fa-trash-alt"></i>
         </button>
       </div>
@@ -83,10 +98,18 @@ class AddInputLocationBox extends React.Component {
   editAndDeleteButtons = () => {
     return (
       <div>
-        <button data-testid={"edit_item"} onClick={this.editItem}>
+        <button
+          id="saveButton"
+          data-testid={"edit_item"}
+          onClick={this.editItem}
+        >
           <i className="fas fa-pen"></i>
         </button>
-        <button data-testid={"delete_item"} onClick={this.props.deleteItem}>
+        <button
+          id="deleteButton"
+          data-testid={"delete_item"}
+          onClick={this.props.deleteItem}
+        >
           <i className="far fa-trash-alt"></i>
         </button>
       </div>
@@ -97,16 +120,25 @@ class AddInputLocationBox extends React.Component {
     if (Number(this.props.travelDetail.cost) <= 0) {
       return;
     }
-    return <p>{`$${this.props.travelDetail.cost}`}</p>;
+    return <h4>{`$${this.props.travelDetail.cost}`}</h4>;
   };
 
   displayExistingTravelDetail = () => {
     return (
       <div data-testid="saved_input">
-        <p>{this.props.travelDetail.program}</p>
-        <p>{this.props.travelDetail.destination}</p>
-        {this.printCostIfMoreThanZero()}
-        <this.editAndDeleteButtons />
+        <h4
+          className="travelDetail__heading"
+          style={{
+            backgroundColor: colourProgram[this.props.travelDetail.program]
+          }}
+        >
+          {this.props.travelDetail.program}
+        </h4>
+        <section className="travelDetail__form">
+          <h4>{this.props.travelDetail.destination}</h4>
+          {this.printCostIfMoreThanZero()}
+          <this.editAndDeleteButtons />
+        </section>
       </div>
     );
   };
