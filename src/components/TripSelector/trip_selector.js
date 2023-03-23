@@ -1,6 +1,4 @@
 import React from "react";
-import DatePicker from "../DatePicker/date_picker";
-import ExistingTrip from "../ExistingTrip/existing_trip";
 import { fetchTrips } from "../../api/api";
 import { withRouter } from "react-router-dom";
 import "./trip_selector.css";

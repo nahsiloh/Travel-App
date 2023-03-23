@@ -27,7 +27,7 @@ class ExistingTrip extends React.Component {
 
       trip.itinerary.map(t => {
         const s = new Date(t.date);
-        t.date = moment(s).format("D MMMM YYYY");
+        return t.date = moment(s).format("D MMMM YYYY");
       });
 
       const display = trip.itinerary.reduce((acc, cur) => {
