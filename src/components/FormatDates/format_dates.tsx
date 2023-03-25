@@ -1,16 +1,14 @@
-import Moment from "moment";
-import { extendMoment } from "moment-range";
-const moment = extendMoment(Moment);
+import { format } from "date-fns";
 
-export const formatDate = date => {
-  return date.format("D MMMM YYYY");
+export const formatDate = (date: Date) => {
+  return format(date, "D MMMM YYYY");
 };
 
-export const formatDay = date => {
-  return date.format("dddd");
+export const formatDay = (date: Date) => {
+  return format(date, "dddd");
 };
 
-export const formatDateFromAPI = date => {
+export const formatDateFromAPI = (date: Date) => {
   const newDate = new Date(String(date));
-  return moment(newDate);
+  return newDate;
 };

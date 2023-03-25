@@ -1,39 +1,29 @@
 import React from "react";
-import {
-  CountryDropdown,
-  RegionDropdown,
-  CountryRegionData
-} from "react-country-region-selector";
+import { useState } from "react";
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
-class SelectCountry extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { country: "", region: "" };
-  }
-  selectCountry(val) {
-    this.setState({ country: val });
-  }
+const SelectCountry: React.FC = () => {
+  const [country, setCountry] = useState("");
+  const [region, setRegion] = useState("");
 
-  selectRegion(val) {
-    this.setState({ region: val });
-  }
+  const selectCountry = (val: string) => {
+    setCountry(val);
+  };
 
-  render() {
-    const { country, region } = this.state;
-    return (
-      <div>
-        <CountryDropdown
-          value={country}
-          onChange={val => this.selectCountry(val)}
-        />
-        <RegionDropdown
-          country={country}
-          value={region}
-          onChange={val => this.selectRegion(val)}
-        />
-      </div>
-    );
-  }
-}
+  const selectRegion = (val: string) => {
+    setRegion(val);
+  };
+
+  return (
+    <div>
+      <CountryDropdown value={country} onChange={(val) => selectCountry(val)} />
+      <RegionDropdown
+        country={country}
+        value={region}
+        onChange={(val) => selectRegion(val)}
+      />
+    </div>
+  );
+};
 
 export default SelectCountry;

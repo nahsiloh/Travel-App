@@ -1,60 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+
+import { ItineraryItem } from "../types";
+
 import "./add_input_location_box.css";
 
-const colourProgram = {
+type ColourProgramProps = {
+  [key: string]: string;
+};
+
+const colourProgram: ColourProgramProps = {
   accommodation: "#e8b665",
   attraction: "#edcabd",
   transportation: "#f7b19b",
-  other: "#a6b1b5"
+  other: "#a6b1b5",
 };
-class AddInputLocationBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      shouldShowInputBoxForEdit: false,
-      destination: "",
-      program: "accommodation",
-      cost: ""
-    };
-  }
 
-  handleDestinationChange = event => {
-    this.setState({
-      destination: event.target.value
-    });
+type AddInputLocationBoxProps = {
+  key: string;
+  travelDetail: ItineraryItem;
+  saveLocation: (dest: string, prog: string, cost: number) => void;
+  deleteItem: () => void;
+};
+
+const AddInputLocationBox: React.FC<
+  AddInputLocationBoxProps & RouteComponentProps
+> = ({ key, travelDetail, saveLocation, deleteItem }) => {
+  const [shouldShowInputBoxForEdit, setShouldShowInputBoxForEdit] =
+    useState(false);
+  const [destination, setDestination] = useState("");
+  const [program, setProgram] = useState("accommodation");
+  const [cost, setCost] = useState(0);
+
+  const handleDestinationChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setDestination(event.target.value);
   };
 
-  handleCostChange = event => {
-    this.setState({
-      cost: event.target.value
-    });
+  const handleCostChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCost(Number(event.target.value));
   };
 
-  handleProgramChange = event => {
-    this.setState({ program: event.target.value });
+  const handleProgramChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setProgram(event.target.value);
   };
 
-  saveItem = () => {
-    if (this.state.destination.length === 0) {
+  const saveItem = () => {
+    if (destination.length === 0) {
       return;
     }
-
-    this.setState({ shouldShowInputBoxForEdit: false });
-
-    this.props.saveLocation(
-      this.state.destination,
-      this.state.program,
-      this.state.cost
-    );
+    setShouldShowInputBoxForEdit(false);
+    saveLocation(destination, program, cost);
   };
 
-  createInputBox = () => {
+  const createInputBox = () => {
     return (
       <div className={"input_box_container"} data-testid="input_box">
         <select
           id="selectProgram"
-          value={this.state.program || this.props.travelDetail.program}
-          onChange={this.handleProgramChange}
+          value={program || travelDetail.program}
+          onChange={handleProgramChange}
         >
           <option value="accommodation">Accommodation</option>
           <option value="attraction">Attractions</option>
@@ -62,10 +68,9 @@ class AddInputLocationBox extends React.Component {
           <option value="other">Other</option>
         </select>
         <textarea
-          type="text"
           aria-label="location_input_box"
-          onChange={this.handleDestinationChange}
-          value={this.state.destination || this.props.travelDetail.destination}
+          onChange={handleDestinationChange}
+          value={destination || travelDetail.destination}
           placeholder={"Location"}
         />
         <input
@@ -73,21 +78,17 @@ class AddInputLocationBox extends React.Component {
           type="number"
           aria-label="cost_input_box"
           min="0"
-          onChange={this.handleCostChange}
-          value={this.state.cost || this.props.travelDetail.cost}
+          onChange={handleCostChange}
+          value={cost || travelDetail.cost}
           placeholder={"Cost"}
         />
-        <button
-          id="saveButton"
-          data-testid={"save_item"}
-          onClick={this.saveItem}
-        >
+        <button id="saveButton" data-testid={"save_item"} onClick={saveItem}>
           <i className="fas fa-check"></i>
         </button>
         <button
           id="deleteButton"
           data-testid={"delete_item"}
-          onClick={this.props.deleteItem}
+          onClick={deleteItem}
         >
           <i className="far fa-trash-alt"></i>
         </button>
@@ -95,20 +96,16 @@ class AddInputLocationBox extends React.Component {
     );
   };
 
-  editAndDeleteButtons = () => {
+  const editAndDeleteButtons = () => {
     return (
       <div>
-        <button
-          id="saveButton"
-          data-testid={"edit_item"}
-          onClick={this.editItem}
-        >
+        <button id="saveButton" data-testid={"edit_item"} onClick={editItem}>
           <i className="fas fa-pen"></i>
         </button>
         <button
           id="deleteButton"
           data-testid={"delete_item"}
-          onClick={this.props.deleteItem}
+          onClick={deleteItem}
         >
           <i className="far fa-trash-alt"></i>
         </button>
@@ -116,62 +113,58 @@ class AddInputLocationBox extends React.Component {
     );
   };
 
-  printCostIfMoreThanZero = () => {
-    if (Number(this.props.travelDetail.cost) <= 0) {
+  const printCostIfMoreThanZero = () => {
+    if (Number(travelDetail.cost) <= 0) {
       return;
     }
-    return <h4>{`$${this.props.travelDetail.cost}`}</h4>;
+    return <h4>{`$${travelDetail.cost}`}</h4>;
   };
 
-  displayExistingTravelDetail = () => {
+  const displayExistingTravelDetail = () => {
     return (
       <div data-testid="saved_input">
         <h4
           className="travelDetail__heading"
           style={{
-            backgroundColor: colourProgram[this.props.travelDetail.program]
+            backgroundColor: colourProgram[travelDetail.program || ""],
           }}
         >
-          {this.props.travelDetail.program}
+          {travelDetail.program}
         </h4>
         <section className="travelDetail__form">
-          <h4>{this.props.travelDetail.destination}</h4>
-          {this.printCostIfMoreThanZero()}
-          <this.editAndDeleteButtons />
+          <h4>{travelDetail.destination}</h4>
+          {printCostIfMoreThanZero()}
+          {editAndDeleteButtons()}
         </section>
       </div>
     );
   };
 
-  displayTravelDetailOrInputBox = () => {
-    if (
-      this.props.travelDetail.destination.length > 0 &&
-      !this.state.shouldShowInputBoxForEdit
-    ) {
-      return this.displayExistingTravelDetail();
-    } else if (
-      this.props.travelDetail.destination.length === 0 ||
-      this.state.shouldShowInputBoxForEdit
-    ) {
-      return this.createInputBox();
+  const displayTravelDetailOrInputBox = () => {
+    if (travelDetail.destination) {
+      if (travelDetail?.destination.length > 0 && !shouldShowInputBoxForEdit) {
+        return displayExistingTravelDetail();
+      } else if (
+        travelDetail?.destination.length === 0 ||
+        shouldShowInputBoxForEdit
+      ) {
+        return createInputBox();
+      }
     }
   };
 
-  editItem = () => {
-    this.setState({
-      destination: this.props.travelDetail.destination,
-      program: this.props.travelDetail.program,
-      cost: this.props.travelDetail.cost,
-      shouldShowInputBoxForEdit: true
-    });
+  const editItem = () => {
+    setDestination(travelDetail?.destination || "");
+    setProgram(travelDetail?.program || "");
+    setCost(travelDetail?.cost || 0);
+    setShouldShowInputBoxForEdit(true);
   };
 
-  render() {
-    return (
-      <div className={"input_display_container"}>
-        <this.displayTravelDetailOrInputBox />
-      </div>
-    );
-  }
-}
-export default AddInputLocationBox;
+  return (
+    <div className={"input_display_container"}>
+      {displayTravelDetailOrInputBox()}
+    </div>
+  );
+};
+
+export default withRouter(AddInputLocationBox);

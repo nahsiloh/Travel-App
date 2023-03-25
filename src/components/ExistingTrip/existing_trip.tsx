@@ -1,102 +1,102 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory, withRouter, RouteComponentProps } from "react-router-dom";
+import { add, format, eachDayOfInterval } from "date-fns";
 
 import "./existing_trip.css";
 
 import { formatDate, formatDay } from "../FormatDates/format_dates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
-import { withRouter } from "react-router-dom";
-
-import Moment from "moment";
-import { extendMoment } from "moment-range";
 import { fetchTripById, editTrip } from "../../api/api";
-const moment = extendMoment(Moment);
+import { Trip, ItineraryItem } from "../types";
 
-class ExistingTrip extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      travelDates: [],
-      tripData: { name: "" },
-      tripDisplay: {}
+type ExistingTripProps = {
+  checkIsLoggedIn: (isLoggedIn: boolean) => void;
+  isLoggedIn: boolean;
+  tripId: string;
+};
+
+const ExistingTrip: React.FC<ExistingTripProps & RouteComponentProps> = ({
+  tripId,
+}) => {
+  const history = useHistory();
+
+  const [travelDates, setTravelDates] = useState([]);
+  const [tripData, setTripData] = useState<Trip>({
+    name: "",
+    itinerary: [{ id: "", date: "" }],
+  });
+  const [tripDisplay, setTripDisplay] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchTripById(tripId);
+        setTripData(response);
+      } catch (err) {
+        return err;
+      }
     };
-  }
 
-  componentDidMount = async () => {
-    try {
-      const trip = await fetchTripById(this.props.tripId);
+    fetchData();
+  }, [tripId]);
 
-      trip.itinerary.map(t => {
-        const s = new Date(t.date);
-        return t.date = moment(s).format("D MMMM YYYY");
-      });
+  useEffect(() => {
+    // const display = tripData.itinerary.reduce((acc, cur) => {
+    //   if (Array.isArray(acc[cur.date])) {
+    //     acc[cur.date].push(cur);
+    //   } else {
+    //     acc[cur.date] = [cur];
+    //   }
+    //   return acc;
+    // }, {});
+    // setTripDisplay(display);
+    // localStorage.setItem("trip", JSON.stringify(tripDisplay));
+  }, [tripData, tripDisplay]);
 
-      const display = trip.itinerary.reduce((acc, cur) => {
-        if (Array.isArray(acc[cur.date])) {
-          acc[cur.date].push(cur);
-        } else {
-          acc[cur.date] = [cur];
-        }
-        return acc;
-      }, {});
-
-      this.setState({ tripDisplay: display, tripData: trip });
-      console.log(this.state.tripDisplay);
-      localStorage.setItem("trip", JSON.stringify(this.state.tripDisplay));
-    } catch (err) {
-      return err.message;
-    }
-  };
-
-  updateExistingTrip = async () => {
-    const trip = JSON.parse(localStorage.getItem("trip")) || {};
-    const itineraries = [];
+  const updateExistingTrip = async () => {
+    const tripString = localStorage.getItem("trip");
+    const trip = tripString ? JSON.parse(tripString) : {};
+    const itineraries: ItineraryItem[] = [];
 
     const dates = Object.keys(trip);
 
-    dates.forEach(date => {
+    dates.forEach((date) => {
       const travelDetail = trip[date];
-      travelDetail.forEach(item => {
+      travelDetail.forEach((item: ItineraryItem) => {
         itineraries.push(item);
       });
     });
 
-    itineraries.map(travelDetail => {
+    itineraries.map((travelDetail) => {
       const d = new Date(travelDetail.date);
-      return moment(d).format();
+      return format(d, "DD MM YYYY");
     });
 
-    await editTrip(this.props.tripId, itineraries);
+    await editTrip(tripId, itineraries);
 
     localStorage.removeItem("trip");
-    this.props.history.push("/tripSelect");
+    history.push("/tripSelect");
   };
 
-  printDatesList = () => {
-    const dateRange = moment.range(
-      this.state.tripData.startDate,
-      this.state.tripData.endDate
-    );
-
-    const listDates = Array.from(dateRange.by("days"));
+  const printDatesList = () => {
+    const listDates = eachDayOfInterval({
+      start: tripData.startDate || new Date(),
+      end: tripData.endDate || add(new Date(), { days: 7 }),
+    });
 
     return (
       <div>
-        {listDates.map(day => {
+        {listDates.map((day) => {
           return (
-            <div key={day} className={"print_date"}>
+            <div key={String(day)} className={"print_date"}>
               <div className={"dates"}>
                 <p className={"display_dates"}>{formatDate(day)}</p>
                 <p className={"display_dates"}>{formatDay(day)}</p>
               </div>
               <AddLocationForEachDay
-                dateToSave={formatDate(day)}
-                dateToDisplay={formatDate(day)}
-                itineraryPerDay={
-                  this.state.tripDisplay[formatDate(day)]
-                    ? this.state.tripDisplay[formatDate(day)]
-                    : []
-                }
-                tripId={this.props.tripId}
+                dateToSave={day}
+                itineraryPerDay={[]}
+                dateToDisplay={""}
               />
             </div>
           );
@@ -105,40 +105,31 @@ class ExistingTrip extends React.Component {
     );
   };
 
-  generateItinerary = () => {
-    const travelDates = this.printDatesList();
+  const generateItinerary = () => {
+    const travelDates = printDatesList();
+    localStorage.removeItem("trip");
 
-    this.setState(() => {
-      return {
-        travelDates
-      };
-    });
+    setTripDisplay(travelDates);
   };
 
-  render() {
-    return (
-      <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
-        <h2 className="existingItinerary__heading">Boarding Soon!</h2>
-        <section className="existingItinerary_form">
-          <h3 className="existingItinerary__title">
-            {this.state.tripData.name}
-          </h3>
-          <button
-            data-testid={"submitDateButton"}
-            className={"submit_date_button"}
-            onClick={this.generateItinerary}
-          >
-            <i className="far fa-paper-plane"></i>
-          </button>
-          <button onClick={this.updateExistingTrip}>Save Trip</button>
+  return (
+    <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
+      <h2 className="existingItinerary__heading">Boarding Soon!</h2>
+      <section className="existingItinerary_form">
+        <h3 className="existingItinerary__title">{tripData.name}</h3>
+        <button
+          data-testid={"submitDateButton"}
+          className={"submit_date_button"}
+          onClick={generateItinerary}
+        >
+          <i className="far fa-paper-plane"></i>
+        </button>
+        <button onClick={updateExistingTrip}>Save Trip</button>
 
-          <div className="existingItinerary__travelDates">
-            {this.state.travelDates}
-          </div>
-        </section>
-      </div>
-    );
-  }
-}
+        <div className="existingItinerary__travelDates">{travelDates}</div>
+      </section>
+    </div>
+  );
+};
 
 export default withRouter(ExistingTrip);

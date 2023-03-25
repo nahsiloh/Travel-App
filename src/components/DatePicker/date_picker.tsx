@@ -1,99 +1,102 @@
-import React from "react";
+import React, { useState } from "react";
+import { withRouter, RouteComponentProps, useHistory } from "react-router-dom";
+import { add, format, eachDayOfInterval } from "date-fns";
+import { Datepicker } from "@datepicker-react/styled";
 
 import { createNewTrip } from "../../api/api";
-import "react-dates/initialize";
-
-import { DateRangePicker } from "react-dates";
-import "react-dates/lib/css/_datepicker.css";
-import "./date_picker.css";
-
 import { formatDate, formatDay } from "../FormatDates/format_dates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
-import { withRouter } from "react-router-dom";
+import { ItineraryItem } from "../types";
 
-import Moment from "moment";
-import { extendMoment } from "moment-range";
-const moment = extendMoment(Moment);
+import "./date_picker.css";
 
-class DatePicker extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      startDate: moment(),
-      endDate: moment().add(7, "days"),
-      travelDates: [],
-      name: "",
-      tripDisplay: {}
-    };
-  }
+type DatePickerProps = {
+  checkIsLoggedIn: (isLoggedIn: boolean) => void;
+  isLoggedIn: boolean;
+  tripId: string;
+};
 
-  handleNameChange = event => {
-    this.setState({ name: event.target.value });
+const DatePicker: React.FC<DatePickerProps & RouteComponentProps> = () => {
+  const history = useHistory();
+
+  const [tripName, setTripName] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(add(startDate, { days: 7 }));
+  const [travelDates, setTravelDates] = useState([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [tripDisplay, setTripDisplay] = useState({});
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTripName(event.target.value);
   };
 
-  countDays = () => {
-    const diffDay = this.state.endDate.diff(this.state.startDate, "days");
-    return diffDay + 1;
+  const handleDatepickerClose = () => {
+    setIsDatePickerOpen(false);
   };
 
-  saveNewTrip = async () => {
-    const trip = JSON.parse(localStorage.getItem("trip")) || {};
-    const itineraries = [];
+  const handleDateSelectionChange = () => {
+    setIsDatePickerOpen(true);
+  };
 
-    const dates = Object.keys(trip);
-    dates.forEach(date => {
-      const travelDetail = trip[date];
-      travelDetail.forEach(item => {
-        itineraries.push(item);
+  const saveNewTrip = async () => {
+    const tripString = localStorage.getItem("trip");
+    const trip = tripString ? JSON.parse(tripString) : {};
+    const itineraries: ItineraryItem[] = [];
+
+    if (Object.keys(trip).length > 0) {
+      const dates = Object.keys(trip);
+      dates.forEach((date) => {
+        const travelDetails = trip[date];
+        travelDetails.forEach((item: ItineraryItem) => {
+          itineraries.push(item);
+        });
       });
-    });
 
-    itineraries.map(travelDetail => {
-      const d = new Date(travelDetail.date);
-      return moment(d).format();
-    });
+      // eslint-disable-next-line array-callback-return
+      itineraries.map((travelDetail) => {
+        if (travelDetail.date) {
+          const d = new Date(travelDetail.date);
+          return format(d, "YYYY-MM-DD");
+        }
+      });
+    }
 
     const newTrip = {
-      name: this.state.name,
-      startDate: moment(this.state.startDate).format(),
-      endDate: moment(this.state.endDate).format(),
-      itinerary: itineraries
+      name: tripName,
+      startDate,
+      endDate,
+      itinerary: itineraries,
     };
 
     await createNewTrip(newTrip);
     localStorage.removeItem("trip");
 
-    this.setState({
-      startDate: moment(),
-      endDate: moment().add(7, "days"),
-      travelDates: [],
-      name: "",
-      tripDisplay: {}
-    });
+    setTripName("");
+    setStartDate(new Date());
+    setEndDate(add(startDate, { days: 7 }));
+    setTravelDates([]);
+    setTripDisplay({});
 
-    this.props.history.push("/tripSelect");
+    history.push("/tripSelect");
   };
 
-  printDatesList = () => {
-    const dateRange = moment.range(this.state.startDate, this.state.endDate);
-    const listDates = Array.from(dateRange.by("days"));
+  const printDatesList = () => {
+    const listDates = eachDayOfInterval({ start: startDate, end: endDate });
 
     return (
       <div>
-        {listDates.map(day => {
+        {listDates.map((day) => {
           return (
-            <div key={day} className={"print_date"}>
+            <div key={String(day)} className={"print_date"}>
               <div className={"dates"}>
                 <p className={"display_dates"}>{formatDate(day)}</p>
                 <p className={"display_dates"}>{formatDay(day)}</p>
               </div>
               <AddLocationForEachDay
-                dateToSave={formatDate(day)}
-                itineraryPerDay={
-                  this.state.tripDisplay[day.toISOString()]
-                    ? this.state.tripDisplay[day.toISOString()]
-                    : []
-                }
+                dateToSave={day}
+                itineraryPerDay={[]}
+                dateToDisplay={""}
               />
             </div>
           );
@@ -102,61 +105,58 @@ class DatePicker extends React.Component {
     );
   };
 
-  generateItinerary = () => {
-    const travelDates = this.printDatesList();
+  const generateItinerary = () => {
+    const travelDates = printDatesList();
+    localStorage.removeItem("trip");
 
-    localStorage.clear("trip");
-
-    this.setState(() => {
-      return {
-        travelDates
-      };
-    });
+    setTripDisplay(travelDates);
   };
 
-  render() {
-    return (
-      <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
-        <h2 className="createItinerary__heading">Plan a new trip!</h2>
-        <section className="createItinerary__form">
-          <h3>Trip Name</h3>
-          <input
-            type="string"
-            onChange={this.handleNameChange}
-            value={this.state.name}
-            placeholder="Trip Name"
-            defaultValue="Test trip"
-          />
-          <h3>Trip Dates</h3>
-          <div className={"set_date_container"}>
-            <DateRangePicker
-              startDate={this.state.startDate}
-              startDateId="departure_date"
-              endDate={this.state.endDate}
-              endDateId="return_date"
-              onDatesChange={({ startDate, endDate }) =>
-                this.setState({ startDate, endDate })
-              }
-              focusedInput={this.state.focusedInput}
-              onFocusChange={focusedInput => this.setState({ focusedInput })}
-            />
-          </div>
-          <button
-            data-testid={"submitDateButton"}
-            className={"submit_date_button"}
-            onClick={this.generateItinerary}
-          >
-            <i className="far fa-paper-plane"></i>
-          </button>
-          <button onClick={this.saveNewTrip}>Save Trip</button>
+  const handleDatesChange = () => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  };
 
-          <div className={"createItinerary__travelDates"}>
-            {this.state.travelDates}
-          </div>
-        </section>
-      </div>
-    );
-  }
-}
+  return (
+    <div data-testid={"Travel_Itinerary"} className={"itinerary_container"}>
+      <h2 className="createItinerary__heading">Plan a new trip!</h2>
+      <section className="createItinerary__form">
+        <h3>Trip Name</h3>
+        <input
+          type="string"
+          onChange={handleNameChange}
+          value={"tripName"}
+          placeholder="Trip Name"
+          defaultValue="Test trip"
+        />
+        <h3>Trip Duration</h3>
+        <button onClick={handleDateSelectionChange}>Select Dates</button>
+        <div className={"set_date_container"}>
+          {isDatePickerOpen ? (
+            <Datepicker
+              onDatesChange={handleDatesChange}
+              startDate={startDate} // Date or null
+              endDate={endDate} // Date or null
+              focusedInput={null}
+              onClose={handleDatepickerClose}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+        <button
+          data-testid={"submitDateButton"}
+          className={"submit_date_button"}
+          onClick={generateItinerary}
+        >
+          <i className="far fa-paper-plane"></i>
+        </button>
+        <button onClick={saveNewTrip}>Save Trip</button>
+
+        <div className={"createItinerary__travelDates"}>{travelDates}</div>
+      </section>
+    </div>
+  );
+};
 
 export default withRouter(DatePicker);

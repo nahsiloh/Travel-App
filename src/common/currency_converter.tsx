@@ -2,24 +2,24 @@ import React from "react";
 import CurrencyData from "./currency-data.js";
 // import api from "fixer-io-node";
 
-function Currency(props) {
+type CurrencyProps = {
+  date: string;
+  rates: number;
+};
+
+const Currency = (props: CurrencyProps) => {
   return (
     <div>
       <p>{props.date}</p>
       <p>{props.rates}</p>
     </div>
   );
-}
+};
 
-class CurrencyConverter extends React.Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    // currencyData: Data,
-    // currencyData: CurrencyData
-    // isLoaded: false
-    // };
-  }
+const CurrencyConverter: React.FC = () => {
+  // currencyData: Data;
+  // currencyData: CurrencyData;
+  // isLoaded: false;
 
   // componentDidMount() {
   //   fetch(
@@ -37,17 +37,13 @@ class CurrencyConverter extends React.Component {
   //   return Object.keys(CurrencyData);
   // }
 
-  render() {
-    // console.log(keys());
-    // console.log(this.state.currencyData[this.keys[4]]);
-    return (
-      <div>
-        {CurrencyData.map(data => (
-          <Currency date={data.date} rates={data.rates.USD} />
-        ))}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {CurrencyData.map((data) => (
+        <Currency date={data.date} rates={data.rates.USD} />
+      ))}
+    </div>
+  );
+};
 
 export default CurrencyConverter;
