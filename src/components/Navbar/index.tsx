@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./navBar.css";
+
+import "./NavBar.css";
 
 type NavBarProps = {
   logout: (event: React.MouseEvent<HTMLAnchorElement>) => Promise<any>;

@@ -1,7 +1,7 @@
 import axios from "./axios";
 
 import { Trip, ItineraryItem } from "../components/types";
-import { NewUser } from "../components/CreateUser/CreateUser";
+import { NewUser } from "../components/CreateUser";
 
 export const fetchTrips = async () => {
   const response = await axios.get("/trips");

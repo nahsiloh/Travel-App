@@ -4,11 +4,11 @@ import { add, format, eachDayOfInterval } from "date-fns";
 import { Datepicker } from "@datepicker-react/styled";
 
 import { createNewTrip } from "../../api/api";
-import { formatDate, formatDay } from "../FormatDates/format_dates";
+import { formatDate, formatDay } from "../FormatDates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
 import { ItineraryItem } from "../types";
 
-import "./date_picker.css";
+import "./DatePicker.css";
 
 type DatePickerProps = {
   checkIsLoggedIn: (isLoggedIn: boolean) => void;

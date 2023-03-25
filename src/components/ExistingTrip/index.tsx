@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useHistory, withRouter, RouteComponentProps } from "react-router-dom";
 import { add, format, eachDayOfInterval } from "date-fns";
 
-import "./existing_trip.css";
-
-import { formatDate, formatDay } from "../FormatDates/format_dates";
+import { formatDate, formatDay } from "../FormatDates";
 import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
 import { fetchTripById, editTrip } from "../../api/api";
 import { Trip, ItineraryItem } from "../types";
+
+import "./ExistingTrip.css";
 
 type ExistingTripProps = {
   checkIsLoggedIn: (isLoggedIn: boolean) => void;

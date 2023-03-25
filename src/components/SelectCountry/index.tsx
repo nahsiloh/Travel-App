@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
 const SelectCountry: React.FC = () => {
