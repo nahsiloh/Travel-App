@@ -6,7 +6,7 @@ import Login from "../LoginForm";
 import CreateUser from "../CreateUser";
 import NavBar from "../Navbar";
 import { logoutUser } from "../../api/api";
-import DatePicker from "../DatePicker";
+import CreateTrip from "../CreateTrip";
 import ExistingTrip from "../ExistingTrip";
 
 import "./App.css";
@@ -99,7 +99,7 @@ const App: React.FC = () => {
               render={() => (
                 <div className="App">
                   <NavBar logout={logout} />
-                  <DatePicker
+                  <CreateTrip
                     checkIsLoggedIn={checkIsLoggedIn}
                     isLoggedIn={isLoggedIn}
                     tripId={tripId}
