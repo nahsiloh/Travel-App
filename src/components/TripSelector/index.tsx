@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchTrips } from "../../api/api";
 import { useHistory, withRouter, RouteComponentProps } from "react-router-dom";
-import "./trip_selector.css";
+
+import { fetchTrips } from "../../api/api";
+import "./TripSelector.css";
 
 type TripSelectorProps = RouteComponentProps<{ id: string }> & {
   checkTripId: (tripId: string) => void;

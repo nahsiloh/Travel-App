@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
-
-import TripSelector from "../TripSelector/trip_selector";
-import Login from "../LoginForm/LoginForm";
-import CreateUser from "../CreateUser/CreateUser";
-import NavBar from "../Navbar/navBar";
-
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+import TripSelector from "../TripSelector";
+import Login from "../LoginForm";
+import CreateUser from "../CreateUser";
+import NavBar from "../Navbar";
 import { logoutUser } from "../../api/api";
-import DatePicker from "../DatePicker/date_picker";
-import ExistingTrip from "../ExistingTrip/existing_trip";
+import CreateTrip from "../CreateTrip";
+import ExistingTrip from "../ExistingTrip";
+
+import "./App.css";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -99,7 +99,7 @@ const App: React.FC = () => {
               render={() => (
                 <div className="App">
                   <NavBar logout={logout} />
-                  <DatePicker
+                  <CreateTrip
                     checkIsLoggedIn={checkIsLoggedIn}
                     isLoggedIn={isLoggedIn}
                     tripId={tripId}

@@ -3,8 +3,8 @@ export type Trips = Trip[];
 export type Trip = {
   _id?: string;
   name: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: string;
+  endDate?: string;
   itinerary: ItineraryItem[];
 };
 
