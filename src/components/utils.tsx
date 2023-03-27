@@ -1,14 +1,13 @@
 import { format } from "date-fns";
 
 export const formatDate = (date: Date) => {
-  return format(date, "D MMMM YYYY");
+  return format(date, "d LLL yyyy");
 };
 
 export const formatDay = (date: Date) => {
   return format(date, "dddd");
 };
 
-export const formatDateFromAPI = (date: Date) => {
-  const newDate = new Date(String(date));
-  return newDate;
+export const formatStringToDate = (date: string) => {
+  return new Date(date);
 };
