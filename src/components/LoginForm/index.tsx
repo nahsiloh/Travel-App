@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { withRouter, useHistory, RouteComponentProps } from "react-router-dom";
+import { Button, InputGroup } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
 
 import { loginUser } from "../../api/api";
-import "./LoginForm.css";
+import SelectorContainer from "../../UIComponents/SelectorContainer/SelectorContainer";
+import { ButtonStyles } from "../../UIComponents/styles";
 
 interface LoginProps extends RouteComponentProps {
   checkIsLoggedIn: (isLoggedIn: boolean) => void;
-  isLoggedIn: boolean;
-  tripId: string;
 }
 
-const Login: React.FC<LoginProps> = ({
-  checkIsLoggedIn,
-  isLoggedIn,
-  tripId,
-}) => {
+const Login: React.FC<LoginProps> = ({ checkIsLoggedIn }) => {
   const history = useHistory();
 
   const [username, setUsername] = useState("");
@@ -49,31 +46,51 @@ const Login: React.FC<LoginProps> = ({
   };
 
   return (
-    <div data-testid="loginForm">
-      <h2 className="loginForm__heading">Login</h2>
-      <section className="loginForm__form">
-        <h3>USERNAME</h3>
-        <input
-          name="username"
-          type="string"
-          onChange={handleLoginChange}
-          value={username}
-          placeholder="Username"
-          required
-        />
-        <h3>PASSWORD</h3>
-        <input
-          name="password"
-          type="string"
-          onChange={handleLoginChange}
-          value={password}
-          placeholder="Password"
-          required
-        />
-        <button onClick={loginSubmit}>Login!</button>
-        <button onClick={createNewAccount}>Create new Accout!</button>
-        <p>{message}</p>
-      </section>
+    <div>
+      <SelectorContainer
+        selectorHeader={"Login"}
+        selectorForm={
+          <div>
+            <h3>USERNAME</h3>
+            <InputGroup className="mb-4" size="lg">
+              <Form.Control
+                name="username"
+                placeholder="Username"
+                type="string"
+                onChange={handleLoginChange}
+              />
+            </InputGroup>
+
+            <h3>PASSWORD</h3>
+            <InputGroup className="mb-4" size="lg">
+              <Form.Control
+                name="password"
+                placeholder="Password"
+                type="string"
+                onChange={handleLoginChange}
+              />
+            </InputGroup>
+
+            <Button
+              size="lg"
+              style={{ ...ButtonStyles, margin: 10 }}
+              onClick={loginSubmit}
+            >
+              Login
+            </Button>
+
+            <Button
+              size="lg"
+              style={{ ...ButtonStyles, margin: 10 }}
+              onClick={createNewAccount}
+            >
+              Create Account
+            </Button>
+
+            <p>{message}</p>
+          </div>
+        }
+      />
     </div>
   );
 };

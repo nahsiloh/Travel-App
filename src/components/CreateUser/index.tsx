@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { withRouter, RouteComponentProps, useHistory } from "react-router-dom";
-import { createUser } from "../../api/api";
+import { Button, InputGroup } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
 
-import "./CreateUser.css";
+import { createUser } from "../../api/api";
+import SelectorContainer from "../../UIComponents/SelectorContainer/SelectorContainer";
+import { ButtonStyles } from "../../UIComponents/styles";
 
 interface CreateUserProps extends RouteComponentProps {
   checkIsLoggedIn: (isLoggedIn: boolean) => void;
@@ -57,42 +60,55 @@ const CreateUser: React.FC<CreateUserProps> = () => {
   };
 
   return (
-    <div>
-      <h2 className="createUser__heading">Create an account!</h2>
-      <section className="createUser__form">
-        <h3>EMAIL</h3>
-        <input
-          name="email"
-          type="string"
-          onChange={handleCreateUserChange}
-          value={email}
-          placeholder="Email"
-          required
-        />
-        <h3>USERNAME</h3>
-        <input
-          name="username"
-          type="string"
-          onChange={handleCreateUserChange}
-          value={username}
-          placeholder="Username"
-          required
-        />
-        <h3>PASSWORD</h3>
-        <input
-          name="password"
-          type="string"
-          onChange={handleCreateUserChange}
-          value={password}
-          placeholder="Password"
-          required
-        />
-        <button onClick={submitCreateUser} data-testid={"createUserButton"}>
-          Create!
-        </button>
-        <p>{message}</p>
-      </section>
-    </div>
+    <SelectorContainer
+      selectorHeader={"Create Account"}
+      selectorForm={
+        <div>
+          <h3>EMAIL</h3>
+          <InputGroup className="mb-4" size="lg">
+            <Form.Control
+              name="email"
+              placeholder="Email"
+              type="string"
+              onChange={handleCreateUserChange}
+              required
+            />
+          </InputGroup>
+
+          <h3>USERNAME</h3>
+          <InputGroup className="mb-4" size="lg">
+            <Form.Control
+              name="username"
+              placeholder="Username"
+              type="string"
+              onChange={handleCreateUserChange}
+              required
+            />
+          </InputGroup>
+
+          <h3>PASSWORD</h3>
+          <InputGroup className="mb-4" size="lg">
+            <Form.Control
+              name="password"
+              placeholder="Password"
+              type="string"
+              onChange={handleCreateUserChange}
+              required
+            />
+          </InputGroup>
+
+          <Button
+            size="lg"
+            style={{ ...ButtonStyles, margin: 10 }}
+            onClick={submitCreateUser}
+          >
+            Create
+          </Button>
+
+          <p>{message}</p>
+        </div>
+      }
+    />
   );
 };
 
