@@ -1,19 +1,30 @@
 import { Reducer } from "react";
-import { State } from "./state";
+import { AppState } from "./state";
+import { ActionTypes } from "./actions";
 
 export type ActionTypes = {
   type: string;
   payload: unknown;
 };
 
-const reducer: Reducer<State, ActionTypes> = (state, { type, payload }) => {
+const reducer: Reducer<AppState, ActionTypes> = (state, { type, payload }) => {
   switch (type) {
-    case "UPDATE_START_DATE":
+    case ActionTypes.UPDATE_TRIP_ID:
+      return {
+        ...state,
+        tripId: payload as string,
+      };
+    case ActionTypes.UPDATE_TRIP_NAME:
+      return {
+        ...state,
+        tripName: payload as string,
+      };
+    case ActionTypes.UPDATE_START_DATE:
       return {
         ...state,
         tripStartDate: payload as Date,
       };
-    case "UPDATE_END_DATE":
+    case ActionTypes.UPDATE_END_DATE:
       return {
         ...state,
         tripEndDate: payload as Date,
