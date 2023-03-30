@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useReducer } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 
 import { Datepicker } from "@datepicker-react/styled";
 import { isBefore } from "date-fns";
@@ -7,20 +7,20 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { formatDate } from "../utils";
-
-import reducer from "../../reducer";
-import { initialState } from "../../reducer/state";
+import { ReducerContext } from "../App";
 
 import { ButtonStyles } from "../../UIComponents/styles";
 import { updateStartDate, updateEndDate } from "../../reducer/actions";
 
 const DateSelector: React.FC = () => {
-  const target = useRef(null);
-
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const { state, dispatch } = useContext(ReducerContext);
   const { tripStartDate, tripEndDate } = state;
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  console.log("tripStartDate::", tripStartDate);
+
+  const target = useRef(null);
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [focusedInput, setFocusedInput] = useState<
     "startDate" | "endDate" | null
   >("startDate");
@@ -36,6 +36,7 @@ const DateSelector: React.FC = () => {
         dispatch(updateEndDate(selectedDate));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, tripEndDate, tripStartDate]);
 
   const handleDatePicker = () => {
