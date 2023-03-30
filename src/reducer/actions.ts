@@ -1,8 +1,11 @@
+import { ItineraryItem } from "../components/types";
+
 export const ActionTypes = {
   UPDATE_TRIP_ID: "UPDATE_TRIP_ID",
   UPDATE_TRIP_NAME: "UPDATE_TRIP_NAME",
   UPDATE_START_DATE: "UPDATE_START_DATE",
   UPDATE_END_DATE: "UPDATE_END_DATE",
+  UPDATE_ITINERARY: "UPDATE_ITINERARY",
 };
 
 export interface UpdateTripIdAction {
@@ -24,11 +27,17 @@ export interface UpdateEndDateAction {
   payload: Date;
 }
 
+export interface UpdateItineraryAction {
+  type: typeof ActionTypes.UPDATE_ITINERARY;
+  payload: ItineraryItem[];
+}
+
 export type Action =
   | UpdateTripIdAction
   | UpdateTripNameAction
   | UpdateStartDateAction
-  | UpdateEndDateAction;
+  | UpdateEndDateAction
+  | UpdateItineraryAction;
 
 export const updateTripId = (tripId: string): UpdateTripIdAction => {
   return {
@@ -55,5 +64,14 @@ export const updateEndDate = (endDate: Date): UpdateEndDateAction => {
   return {
     type: ActionTypes.UPDATE_END_DATE,
     payload: endDate,
+  };
+};
+
+export const updateItinerary = (
+  itinerary: ItineraryItem[]
+): UpdateItineraryAction => {
+  return {
+    type: ActionTypes.UPDATE_ITINERARY,
+    payload: itinerary,
   };
 };
