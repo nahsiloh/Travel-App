@@ -1,12 +1,14 @@
 import { add } from "date-fns";
-import { ItineraryItem } from "../components/types";
+import { ItineraryByDate, ItineraryItem } from "../components/types";
 
 export type AppState = {
   tripId: string;
   tripName: string;
   tripStartDate: Date;
   tripEndDate: Date;
-  tripItinerary: ItineraryItem[];
+  tripItineraryList: ItineraryItem[];
+  tripItineraryByDate: ItineraryByDate;
+  shouldFetchTrip: boolean;
 };
 
 export const initialState: AppState = {
@@ -14,5 +16,7 @@ export const initialState: AppState = {
   tripName: "",
   tripStartDate: new Date(),
   tripEndDate: add(new Date(), { days: 7 }),
-  tripItinerary: [],
+  tripItineraryList: [],
+  tripItineraryByDate: {},
+  shouldFetchTrip: false,
 };

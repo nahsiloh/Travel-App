@@ -6,6 +6,7 @@ export const ActionTypes = {
   UPDATE_START_DATE: "UPDATE_START_DATE",
   UPDATE_END_DATE: "UPDATE_END_DATE",
   UPDATE_ITINERARY: "UPDATE_ITINERARY",
+  SET_FETCH_TRIP: "SET_FETCH_TRIP",
 };
 
 export interface UpdateTripIdAction {
@@ -32,12 +33,18 @@ export interface UpdateItineraryAction {
   payload: ItineraryItem[];
 }
 
+export interface SetFetchTripAction {
+  type: typeof ActionTypes.SET_FETCH_TRIP;
+  payload: boolean;
+}
+
 export type Action =
   | UpdateTripIdAction
   | UpdateTripNameAction
   | UpdateStartDateAction
   | UpdateEndDateAction
-  | UpdateItineraryAction;
+  | UpdateItineraryAction
+  | SetFetchTripAction;
 
 export const updateTripId = (tripId: string): UpdateTripIdAction => {
   return {
@@ -73,5 +80,12 @@ export const updateItinerary = (
   return {
     type: ActionTypes.UPDATE_ITINERARY,
     payload: itinerary,
+  };
+};
+
+export const setFetchTrip = (shouldFetchTrip: boolean): SetFetchTripAction => {
+  return {
+    type: ActionTypes.SET_FETCH_TRIP,
+    payload: shouldFetchTrip,
   };
 };
