@@ -9,9 +9,13 @@ export type Trip = {
 };
 
 export type ItineraryItem = {
-  id: string;
+  id?: string;
   destination?: string;
   program?: string;
   cost?: number;
   date: string;
+};
+
+export type ItineraryByDate = {
+  [key: string]: ItineraryItem[];
 };
