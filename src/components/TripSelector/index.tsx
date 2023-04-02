@@ -13,7 +13,9 @@ import { ItineraryItem } from "../types";
 import SelectorContainer from "../../UIComponents/SelectorContainer/SelectorContainer";
 import { ReducerContext } from "../App";
 import {
+  setFetchTrip,
   updateEndDate,
+  updateItinerary,
   updateStartDate,
   updateTripId,
 } from "../../reducer/actions";
@@ -29,7 +31,8 @@ type TripData = {
 
 const TripSelector: React.FC<TripSelectorProps> = () => {
   const { state, dispatch } = useContext(ReducerContext);
-  const { tripId, tripName, tripStartDate, tripEndDate } = state;
+  const { tripId, tripName, tripStartDate, tripEndDate, shouldFetchTrip } =
+    state;
 
   const history = useHistory();
 
@@ -37,7 +40,7 @@ const TripSelector: React.FC<TripSelectorProps> = () => {
   const [isNewTrip, setIsNewTrip] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTripList = async () => {
       try {
         const response = await fetchTrips();
         setTripList(response);
@@ -46,33 +49,30 @@ const TripSelector: React.FC<TripSelectorProps> = () => {
       }
     };
 
-    fetchData();
+    fetchTripList();
   }, []);
 
-  console.log("tripId::", tripId);
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTripDetail = async () => {
       try {
         const response = await fetchTripById(tripId);
-        const { _id, startDate, endDate } = response;
-
-        console.log("response::", response);
-        console.log(new Date(startDate));
+        const { _id, startDate, endDate, itinerary } = response;
 
         dispatch(updateTripId(_id));
         dispatch(updateStartDate(new Date(startDate)));
         dispatch(updateEndDate(new Date(endDate)));
+        dispatch(updateItinerary(itinerary));
       } catch (err) {
         return err;
       }
     };
 
-    if (!isNewTrip) {
-      fetchData();
+    if (!isNewTrip || shouldFetchTrip === true) {
+      fetchTripDetail();
     }
+    dispatch(setFetchTrip(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tripId]);
+  }, [tripId, shouldFetchTrip]);
 
   const saveNewTrip = async () => {
     const tripString = localStorage.getItem("trip");
