@@ -18,6 +18,7 @@ import { AppState, initialState } from "../../reducer/state";
 
 import "./App.css";
 import { Action } from "../../reducer/actions";
+
 export interface ReducerContextType {
   state: AppState;
   dispatch: Dispatch<Action>;
