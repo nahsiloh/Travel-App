@@ -13,6 +13,7 @@ type DayColumnProps = {
 
 const DayColumn: React.FC<DayColumnProps> = ({ date, itinerary }) => {
   const [showInputCard, setShowInputCard] = useState(false);
+  const [isItineraryEdit, setIsItineraryEdit] = useState(false);
 
   const addInputCard = () => {
     setShowInputCard(true);
@@ -20,6 +21,10 @@ const DayColumn: React.FC<DayColumnProps> = ({ date, itinerary }) => {
 
   const checkShowInputCard = (isShowInputCard: boolean) => {
     setShowInputCard(isShowInputCard);
+  };
+
+  const checkIsItineraryEdit = (isItineraryEdit: boolean) => {
+    setIsItineraryEdit(isItineraryEdit);
   };
 
   return (
@@ -37,19 +42,30 @@ const DayColumn: React.FC<DayColumnProps> = ({ date, itinerary }) => {
       selectorForm={
         <div>
           {itinerary.map((item) => {
-            return (
+            return !isItineraryEdit ? (
               <ItineraryCard
                 travelDetail={item}
                 checkInputCardFunc={checkShowInputCard}
+              />
+            ) : (
+              <InputCard
+                travelDetail={item}
+                checkInputCardFunc={checkShowInputCard}
+                isExistingItem={true}
               />
             );
           })}
           {showInputCard ? (
             <InputCard
               travelDetail={{
+                _id: undefined,
+                destination: undefined,
+                program: undefined,
+                cost: undefined,
                 date: date,
               }}
               checkInputCardFunc={checkShowInputCard}
+              isExistingItem={false}
             />
           ) : (
             <></>

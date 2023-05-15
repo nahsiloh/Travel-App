@@ -16,7 +16,7 @@ const DateSelector: React.FC = () => {
   const { state, dispatch } = useContext(ReducerContext);
   const { tripStartDate, tripEndDate } = state;
 
-  console.log("tripStartDate::", tripStartDate);
+  console.log("tripStartDate2::", tripStartDate);
 
   const target = useRef(null);
 

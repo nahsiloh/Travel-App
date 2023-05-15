@@ -2,11 +2,12 @@ import React, { useContext, useState } from "react";
 import { Button } from "react-bootstrap";
 
 import { ItineraryItem } from "../types";
-
-import "./add_input_location_box.css";
 import { editTrip } from "../../api/api";
 import { ReducerContext } from "../App";
 import { setFetchTrip } from "../../reducer/actions";
+import { deleteItemFromList } from "./utils";
+
+import "./add_input_location_box.css";
 
 const PROGRAMME_TYPES = [
   "accommodation",
@@ -19,11 +20,13 @@ type InputCardProps = {
   travelDetail: ItineraryItem;
   // saveItem: (dest: string, prog: string, cost: number) => void;
   checkInputCardFunc: (isShowInputCard: boolean) => void;
+  isExistingItem: boolean;
 };
 
 const InputCard: React.FC<InputCardProps> = ({
   travelDetail,
   checkInputCardFunc,
+  isExistingItem,
 }) => {
   const { state, dispatch } = useContext(ReducerContext);
   const { tripId, tripItineraryList } = state;
@@ -47,16 +50,18 @@ const InputCard: React.FC<InputCardProps> = ({
   };
 
   const saveItem = async () => {
+    const editedTrip = [
+      ...(!isExistingItem
+        ? tripItineraryList
+        : deleteItemFromList(tripItineraryList, tripId)),
+      {
+        destination,
+        program,
+        cost,
+        date: travelDetail.date,
+      },
+    ];
     try {
-      const editedTrip = [
-        ...tripItineraryList,
-        {
-          destination,
-          program,
-          cost,
-          date: travelDetail.date,
-        },
-      ];
       await editTrip(tripId, editedTrip);
       dispatch(setFetchTrip(true));
     } catch (error) {

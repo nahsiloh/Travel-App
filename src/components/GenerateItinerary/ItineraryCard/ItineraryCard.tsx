@@ -1,8 +1,5 @@
 import React from "react";
-
-import { ItineraryItem } from "../types";
-
-import "./add_input_location_box.css";
+import { ItineraryItem } from "../../types";
 
 type ColourProgramProps = {
   [key: string]: string;
@@ -15,25 +12,21 @@ const colourProgram: ColourProgramProps = {
   other: "#a6b1b5",
 };
 
-type ItineraryCardProps = {
+type ItineraryCardContainerProps = {
   travelDetail: ItineraryItem;
-  checkInputCardFunc: (isShowInputCard: boolean) => void;
+  editItem: () => void;
+  deleteItem: () => void;
 };
 
-const ItineraryCard: React.FC<ItineraryCardProps> = ({
+const ItineraryCardContainer: React.FC<ItineraryCardContainerProps> = ({
   travelDetail,
-  checkInputCardFunc,
+  editItem,
+  deleteItem,
 }) => {
-  const editItem = () => {
-    checkInputCardFunc(true);
-  };
-
-  const deleteItem = () => {};
-
   const editAndDeleteButtons = () => {
     return (
       <div>
-        <button id="saveButton" data-testid={"edit_item"} onClick={editItem}>
+        <button id="editButton" data-testid={"edit_item"} onClick={editItem}>
           <i className="fas fa-pen"></i>
         </button>
         <button
@@ -47,15 +40,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
     );
   };
 
-  const printCostIfMoreThanZero = () => {
-    if (Number(travelDetail.cost) <= 0) {
-      return;
-    }
-    return <h4>{`$${travelDetail.cost}`}</h4>;
-  };
-
   return (
-    <div data-testid="saved_input">
+    <div>
       <h4
         className="travelDetail__heading"
         style={{
@@ -66,11 +52,11 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
       </h4>
       <section className="travelDetail__form">
         <h4>{travelDetail.destination}</h4>
-        {printCostIfMoreThanZero()}
+        <h4>{`$${travelDetail.cost}`}</h4>;{/* {printCostIfMoreThanZero()} */}
         {editAndDeleteButtons()}
-      </section>
+      </section>{" "}
     </div>
   );
 };
 
-export default ItineraryCard;
+export default ItineraryCardContainer;

@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Row, Col } from "react-bootstrap";
 import { eachDayOfInterval } from "date-fns";
 
 import DayColumn from "./DayColumn";
-import AddLocationForEachDay from "../AddLocationForEachDay/add_location_for_each_day";
-
 import { formatDate } from "../utils";
 
 import { ReducerContext } from "../App";
-import { Row, Col } from "react-bootstrap";
 
 type GenerateItineraryProps = {};
 
