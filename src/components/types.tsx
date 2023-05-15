@@ -9,7 +9,7 @@ export type Trip = {
 };
 
 export type ItineraryItem = {
-  id?: string;
+  _id?: string;
   destination?: string;
   program?: string;
   cost?: number;
